@@ -545,14 +545,19 @@ body {
         <label class="field-label">New or Potential Customer? <span class="req">*</span></label>
         <div class="toggle-row">
           <label class="toggle-opt">
-            <input type="radio" name="newCustomer" value="Yes">
+            <input type="radio" name="newCustomer" value="Yes" onchange="toggleNewCustomer(this)">
             <span class="opt-ico">⭐</span> Yes
           </label>
           <label class="toggle-opt">
-            <input type="radio" name="newCustomer" value="No" checked>
+            <input type="radio" name="newCustomer" value="No" checked onchange="toggleNewCustomer(this)">
             <span class="opt-ico">✅</span> No
           </label>
         </div>
+      </div>
+
+      <div class="field" id="newCustomerNameField" style="display:none">
+        <label class="field-label">Customer Name <span class="req">*</span></label>
+        <input type="text" class="field-input" id="newCustomerName" placeholder="Enter customer name…">
       </div>
 
     </div>
@@ -843,6 +848,13 @@ function updateFocused(opts) {
 
 function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
+function toggleNewCustomer(el) {
+  const field = document.getElementById('newCustomerNameField');
+  field.style.display = el.value === 'Yes' ? 'flex' : 'none';
+  if (el.value === 'No') document.getElementById('newCustomerName').value = '';
+  updateProgress();
+}
+
 // ─────────────────────────────────────────────────────
 // PROGRESS BAR
 // ─────────────────────────────────────────────────────
@@ -871,33 +883,36 @@ async function submitForm() {
   const visitDate    = document.getElementById('visitDate').value;
   const facility     = selectedFacility;
   const facilityType = document.getElementById('facilityType').value;
-  const newCustomer  = document.querySelector('input[name="newCustomer"]:checked')?.value || 'No';
-  const purposes     = [...document.querySelectorAll('input[name="purpose"]:checked')].map(c => c.value);
-  const order        = document.querySelector('input[name="order"]:checked')?.value || 'No';
-  const mapLink      = document.getElementById('mapLink').value.trim();
-  const arrivalTime  = document.getElementById('arrivalTime').value;
-  const departureTime= document.getElementById('departureTime').value;
+  const newCustomer     = document.querySelector('input[name="newCustomer"]:checked')?.value || 'No';
+  const newCustomerName = newCustomer === 'Yes' ? document.getElementById('newCustomerName').value.trim() : '';
+  const purposes        = [...document.querySelectorAll('input[name="purpose"]:checked')].map(c => c.value);
+  const order           = document.querySelector('input[name="order"]:checked')?.value || 'No';
+  const mapLink         = document.getElementById('mapLink').value.trim();
+  const arrivalTime     = document.getElementById('arrivalTime').value;
+  const departureTime   = document.getElementById('departureTime').value;
 
   // Validate
-  if (!repName)        return showToast('Please select your name');
-  if (!visitDate)      return showToast('Please enter the visit date');
-  if (!facility)       return showToast('Please select a facility');
-  if (!facilityType)   return showToast('Please select a facility type');
-  if (!purposes.length)return showToast('Please select at least one visit purpose');
-  if (!mapLink)        return showToast('Please paste your current location link');
-  if (!arrivalTime)    return showToast('Please enter your arrival time');
-  if (!departureTime)  return showToast('Please enter your departure time');
+  if (!repName)         return showToast('Please select your name');
+  if (!visitDate)       return showToast('Please enter the visit date');
+  if (!facility)        return showToast('Please select a facility');
+  if (!facilityType)    return showToast('Please select a facility type');
+  if (newCustomer === 'Yes' && !newCustomerName) return showToast('Please enter the new customer name');
+  if (!purposes.length) return showToast('Please select at least one visit purpose');
+  if (!mapLink)         return showToast('Please paste your current location link');
+  if (!arrivalTime)     return showToast('Please enter your arrival time');
+  if (!departureTime)   return showToast('Please enter your departure time');
   if (arrivalTime >= departureTime) return showToast('Departure time must be after arrival time');
 
   const payload = {
-    action:       'submit',
-    timestamp:    new Date().toISOString(),
+    action:          'submit',
+    timestamp:       new Date().toISOString(),
     repName,
     visitDate,
     facility,
     facilityType,
     newCustomer,
-    purpose:      purposes.join(', '),
+    newCustomerName,
+    purpose:         purposes.join(', '),
     order,
     mapLink,
     arrivalTime,
@@ -933,6 +948,8 @@ function resetForm() {
   clearFacility();
   document.getElementById('facilityType').value = '';
   document.querySelectorAll('input[name="newCustomer"]')[1].checked = true;
+  document.getElementById('newCustomerNameField').style.display = 'none';
+  document.getElementById('newCustomerName').value = '';
   document.querySelectorAll('input[name="purpose"]').forEach(c => c.checked = false);
   document.querySelectorAll('input[name="order"]')[1].checked = true;
   document.getElementById('mapLink').value = '';
