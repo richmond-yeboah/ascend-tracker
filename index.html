@@ -29,9 +29,9 @@
   --mono:         'JetBrains Mono', monospace;
   --r:            12px;
 }
-
+ 
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-
+ 
 body {
   background: var(--bg);
   color: var(--text);
@@ -39,7 +39,7 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
 }
-
+ 
 body::before {
   content: '';
   position: fixed; inset: 0;
@@ -49,7 +49,7 @@ body::before {
   background-size: 44px 44px;
   pointer-events: none; z-index: 0;
 }
-
+ 
 /* ── HEADER ─────────────────────────────────────── */
 header {
   position: relative; z-index: 20;
@@ -59,11 +59,11 @@ header {
   border-bottom: 1px solid var(--border);
   box-shadow: 0 2px 16px rgba(115,64,220,0.08);
 }
-
+ 
 .logo-wrap {
   display: flex; align-items: center; gap: 12px;
 }
-
+ 
 .logo-emblem {
   width: 46px; height: 46px;
   border-radius: 11px;
@@ -73,7 +73,7 @@ header {
   box-shadow: 0 2px 12px rgba(115,64,220,0.3);
   flex-shrink: 0;
 }
-
+ 
 .logo-text .brand {
   font-size: 14px; font-weight: 800;
   letter-spacing: 0.07em; color: var(--text);
@@ -84,7 +84,7 @@ header {
   letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--text-muted);
 }
-
+ 
 .header-center {
   position: absolute; left: 50%; transform: translateX(-50%);
   text-align: center;
@@ -96,11 +96,11 @@ header {
 .header-center p {
   font-size: 11px; color: var(--text-muted); margin-top: 1px;
 }
-
+ 
 .header-right {
   display: flex; align-items: center; gap: 12px;
 }
-
+ 
 .refresh-pill {
   display: flex; align-items: center; gap: 6px;
   background: var(--primary-dim);
@@ -111,7 +111,7 @@ header {
   color: var(--primary-lt);
   font-family: var(--mono);
 }
-
+ 
 .live-dot {
   width: 7px; height: 7px;
   background: var(--green);
@@ -122,14 +122,14 @@ header {
   0%,100% { opacity:1; transform:scale(1); }
   50%      { opacity:0.4; transform:scale(0.6); }
 }
-
+ 
 .last-updated {
   font-size: 11px;
   color: var(--text-dim);
   font-family: var(--mono);
   white-space: nowrap;
 }
-
+ 
 /* ── FILTER BAR ──────────────────────────────────── */
 .filter-bar {
   position: relative; z-index: 14;
@@ -138,22 +138,22 @@ header {
   background: var(--bg);
   border-bottom: 1px solid var(--border);
 }
-
+ 
 .filter-label {
   font-size: 10px; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.1em;
   color: var(--text-dim); white-space: nowrap; flex-shrink: 0;
 }
-
+ 
 .filter-divider {
   width: 1px; height: 20px;
   background: var(--border); flex-shrink: 0;
 }
-
+ 
 .filter-chips {
   display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
 }
-
+ 
 .chip {
   font-size: 11px; font-family: var(--font); font-weight: 500;
   padding: 4px 12px; border-radius: 20px; cursor: pointer;
@@ -172,27 +172,27 @@ header {
   background: var(--green); border-color: var(--green);
   color: #fff; box-shadow: 0 2px 10px rgba(59,187,108,0.35);
 }
-
+ 
 .filter-count {
   font-size: 10px; font-family: var(--mono);
   color: var(--text-dim); margin-left: auto; white-space: nowrap; flex-shrink: 0;
 }
 .filter-count span { color: var(--primary-lt); font-weight: 600; }
-
+ 
 /* ── MAIN CANVAS ─────────────────────────────────── */
 .canvas {
   position: relative; z-index: 5;
   padding: 20px 28px;
   display: flex; flex-direction: column; gap: 18px;
 }
-
+ 
 /* ── KPI ROW ─────────────────────────────────────── */
 .kpi-row {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 14px;
 }
-
+ 
 .kpi-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -206,35 +206,35 @@ header {
   border-color: var(--border-hover);
   box-shadow: 0 0 20px rgba(115,64,220,0.15);
 }
-
+ 
 .kpi-icon {
   width: 44px; height: 44px;
   border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
   font-size: 20px; flex-shrink: 0;
 }
-
+ 
 .kpi-info { flex: 1; min-width: 0; }
-
+ 
 .kpi-val {
   font-family: var(--mono);
   font-size: 28px; font-weight: 700; line-height: 1;
 }
-
+ 
 .kpi-lbl {
   font-size: 10.5px; color: var(--text-muted);
   text-transform: uppercase; letter-spacing: 0.06em;
   margin-top: 4px; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis;
 }
-
+ 
 /* ── MID ROW: MAP + LEADERBOARD ──────────────────── */
 .mid-row {
   display: grid;
   grid-template-columns: 1fr 360px;
   gap: 14px;
 }
-
+ 
 .panel {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -242,20 +242,20 @@ header {
   overflow: hidden;
   animation: riseUp 0.45s ease 0.08s both;
 }
-
+ 
 .panel-hdr {
   display: flex; align-items: center; justify-content: space-between;
   padding: 13px 18px;
   background: var(--surface2);
   border-bottom: 1px solid var(--border);
 }
-
+ 
 .panel-ttl {
   font-size: 11px; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.07em;
   color: var(--text-muted);
 }
-
+ 
 .panel-badge {
   font-size: 10px; font-family: var(--mono);
   background: var(--primary-dim);
@@ -263,21 +263,21 @@ header {
   border: 1px solid rgba(115,64,220,0.3);
   border-radius: 10px; padding: 2px 9px;
 }
-
+ 
 /* MAP */
 #map {
   height: 400px;
   background: #e8e4f0;
 }
-
+ 
 /* LEADERBOARD */
 .lboard-wrap {
   height: 400px;
   overflow-y: auto;
 }
-
+ 
 .lboard-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-
+ 
 .lboard-table th {
   position: sticky; top: 0;
   background: var(--surface2);
@@ -286,7 +286,7 @@ header {
   padding: 9px 12px; text-align: left;
   border-bottom: 1px solid var(--border);
 }
-
+ 
 .lboard-table td {
   padding: 9px 12px;
   border-bottom: 1px solid rgba(115,64,220,0.08);
@@ -294,30 +294,30 @@ header {
 }
 .lboard-table tr:last-child td { border-bottom: none; }
 .lboard-table tr:hover td { background: rgba(115,64,220,0.06); }
-
+ 
 .rep-cell { display: flex; align-items: center; gap: 8px; }
 .rep-swatch { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .rep-nm { font-weight: 600; color: var(--text); }
-
+ 
 .zone-tag {
   font-size: 10px; padding: 2px 7px; border-radius: 8px;
   background: var(--primary-dim); color: var(--primary-lt);
   border: 1px solid rgba(115,64,220,0.25);
 }
-
+ 
 .mono { font-family: var(--mono); font-size: 12px; }
-
+ 
 .vbar { display: flex; align-items: center; gap: 6px; }
 .vbar-bg { flex: 1; height: 4px; background: rgba(115,64,220,0.1); border-radius: 2px; overflow: hidden; }
 .vbar-fill { height: 100%; border-radius: 2px; transition: width 0.8s ease; }
-
+ 
 /* ── CHARTS ROW ──────────────────────────────────── */
 .charts-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 14px;
 }
-
+ 
 .chart-panel {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -325,13 +325,13 @@ header {
   overflow: hidden;
   animation: riseUp 0.45s ease 0.15s both;
 }
-
+ 
 .chart-body {
   padding: 14px;
   height: 220px;
   position: relative;
 }
-
+ 
 /* ── EMPTY / LOADING ─────────────────────────────── */
 .void {
   display: flex; flex-direction: column;
@@ -342,7 +342,7 @@ header {
 .void-ico { font-size: 36px; opacity: 0.35; }
 .void-ttl { font-size: 14px; font-weight: 600; color: var(--text-muted); }
 .void-sub { font-size: 12px; line-height: 1.6; max-width: 260px; }
-
+ 
 .loading-veil {
   position: fixed; inset: 0;
   background: rgba(243, 240, 250, 0.88);
@@ -352,7 +352,7 @@ header {
   backdrop-filter: blur(4px);
   display: none;
 }
-
+ 
 .spinner {
   width: 38px; height: 38px;
   border: 3px solid rgba(115,64,220,0.18);
@@ -362,17 +362,17 @@ header {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 .spinner-lbl { font-size: 12.5px; color: var(--text-muted); font-family: var(--mono); }
-
+ 
 @keyframes riseUp {
   from { opacity:0; transform:translateY(16px); }
   to   { opacity:1; transform:translateY(0); }
 }
-
+ 
 /* ── SCROLLBAR ───────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: #f0ebfb; }
 ::-webkit-scrollbar-thumb { background: rgba(115,64,220,0.25); border-radius: 2px; }
-
+ 
 /* ── LEAFLET POPUP LIGHT OVERRIDE ─────────────────── */
 .drk-popup .leaflet-popup-content-wrapper {
   background: #ffffff !important; color: #1A0A3B !important;
@@ -383,7 +383,7 @@ header {
 }
 .drk-popup .leaflet-popup-tip { background: #ffffff !important; }
 .drk-popup .leaflet-popup-content { margin: 0 !important; }
-
+ 
 /* ── LOGIN SCREEN ────────────────────────────────── */
 #loginScreen {
   position: fixed; inset: 0; z-index: 9999;
@@ -391,7 +391,7 @@ header {
   display: flex; align-items: center; justify-content: center;
   padding: 24px;
 }
-
+ 
 .login-card {
   background: #ffffff;
   border-radius: 20px;
@@ -400,12 +400,12 @@ header {
   box-shadow: 0 24px 80px rgba(0,0,0,0.4);
   animation: riseUp 0.4s ease;
 }
-
+ 
 .login-logo {
   display: flex; align-items: center; gap: 12px;
   margin-bottom: 28px;
 }
-
+ 
 .login-logo-badge {
   width: 48px; height: 48px; border-radius: 12px;
   background: linear-gradient(135deg, #5828C4, #2E8B55);
@@ -413,7 +413,7 @@ header {
   font-size: 24px;
   box-shadow: 0 4px 16px rgba(115,64,220,0.35);
 }
-
+ 
 .login-logo-text .brand {
   font-size: 13px; font-weight: 800;
   letter-spacing: 0.07em; color: var(--text);
@@ -422,7 +422,7 @@ header {
   font-size: 11px; color: var(--text-muted);
   letter-spacing: 0.05em; margin-top: 1px;
 }
-
+ 
 .login-ttl {
   font-size: 22px; font-weight: 800;
   color: var(--text); margin-bottom: 6px;
@@ -431,7 +431,7 @@ header {
   font-size: 13px; color: var(--text-muted);
   margin-bottom: 24px; line-height: 1.5;
 }
-
+ 
 .login-field {
   display: flex; flex-direction: column; gap: 5px;
   margin-bottom: 14px;
@@ -454,7 +454,7 @@ header {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(115,64,220,0.1);
 }
-
+ 
 .login-error {
   font-size: 12px; color: #E53935;
   background: rgba(229,57,53,0.07);
@@ -463,7 +463,7 @@ header {
   border-left: 3px solid #E53935;
 }
 .login-error.show { display: block; }
-
+ 
 .btn-login {
   width: 100%;
   background: linear-gradient(135deg, #5828C4, var(--primary));
@@ -478,7 +478,7 @@ header {
 .btn-login:hover   { opacity: 0.92; }
 .btn-login:active  { transform: scale(0.98); }
 .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
-
+ 
 .login-spinner {
   display: inline-block;
   width: 14px; height: 14px;
@@ -489,7 +489,7 @@ header {
   vertical-align: middle; margin-right: 6px;
   display: none;
 }
-
+ 
 /* ── SIGNOUT BUTTON ──────────────────────────────── */
 .signout-btn {
   background: none; border: 1px solid var(--border);
@@ -501,7 +501,35 @@ header {
 .signout-btn:hover {
   border-color: #E53935; color: #E53935;
 }
-
+ 
+/* ── CONVERSION TABLE ────────────────────────────── */
+.conv-wrap { max-height: 280px; overflow-y: auto; }
+ 
+.conv-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.conv-table th {
+  position: sticky; top: 0;
+  background: var(--surface2);
+  color: var(--text-dim); font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 9px 14px; text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.conv-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(115,64,220,0.06);
+  vertical-align: middle;
+}
+.conv-table tr:last-child td { border-bottom: none; }
+.conv-table tr:hover td { background: rgba(115,64,220,0.04); }
+.conv-name { font-weight: 700; color: var(--text); font-size: 13px; }
+.conv-sub  { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.badge-converted {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: 8px;
+  background: rgba(30,158,85,0.1); color: var(--green);
+  border: 1px solid rgba(30,158,85,0.2);
+}
+ 
 @media (max-width: 1100px) {
   .kpi-row    { grid-template-columns: repeat(3, 1fr); }
   .mid-row    { grid-template-columns: 1fr; }
@@ -517,7 +545,7 @@ header {
 </style>
 </head>
 <body>
-
+ 
 <!-- ── LOGIN SCREEN ── -->
 <div id="loginScreen">
   <div class="login-card">
@@ -545,13 +573,13 @@ header {
     </button>
   </div>
 </div>
-
+ 
 <!-- Loading veil -->
 <div class="loading-veil" id="veil">
   <div class="spinner"></div>
   <div class="spinner-lbl">Fetching field activity data…</div>
 </div>
-
+ 
 <!-- ── HEADER ── -->
 <header>
   <div class="logo-wrap">
@@ -561,12 +589,12 @@ header {
       <div class="dept">Field Operations</div>
     </div>
   </div>
-
+ 
   <div class="header-center">
     <h1>Field Rep Activity Tracker</h1>
     <p>Real-time territory coverage &amp; performance</p>
   </div>
-
+ 
   <div class="header-right">
     <div class="last-updated" id="lastUpdated">—</div>
     <div class="refresh-pill">
@@ -576,10 +604,10 @@ header {
     <button class="signout-btn" onclick="signOut()">Sign out</button>
   </div>
 </header>
-
+ 
 <!-- ── CONFIG BAR ── -->
 <!-- ── CONFIG BAR REMOVED — URL hardcoded ── -->
-
+ 
 <!-- ── FILTER BAR ── -->
 <div class="filter-bar" id="filterBar" style="display:none">
   <span class="filter-label">Date</span>
@@ -587,9 +615,9 @@ header {
     <div class="chip active" id="chipAll" onclick="setToday(false)">All Time</div>
     <div class="chip chip-today" id="chipToday" onclick="setToday(true)">📅 Today Only</div>
   </div>
-
+ 
   <div class="filter-divider"></div>
-
+ 
   <span class="filter-label">Purpose</span>
   <div class="filter-chips" id="purposeChips">
     <div class="chip active" data-purpose="All" onclick="togglePurpose(this)">All</div>
@@ -601,10 +629,10 @@ header {
     <div class="chip" data-purpose="Payment Collection" onclick="togglePurpose(this)">Payment Collection</div>
     <div class="chip" data-purpose="New Customer Acquisition" onclick="togglePurpose(this)">New Customer Acquisition</div>
   </div>
-
+ 
   <div class="filter-count" id="filterCount">Showing <span id="filterCountNum">0</span> visits</div>
 </div>
-
+ 
 <!-- ── REP FILTER ROW ── -->
 <div class="filter-bar" id="repFilterBar" style="display:none; border-top: none; padding-top: 0;">
   <span class="filter-label">Rep</span>
@@ -612,10 +640,10 @@ header {
     <div class="chip active" data-rep="All" onclick="toggleRep(this)">All Reps</div>
   </div>
 </div>
-
+ 
 <!-- ── CANVAS ── -->
 <div class="canvas">
-
+ 
   <!-- KPIs -->
   <div class="kpi-row" id="kpiRow">
     <div class="kpi-card" style="grid-column:1/-1;justify-content:center">
@@ -626,7 +654,7 @@ header {
       </div>
     </div>
   </div>
-
+ 
   <!-- Map + Leaderboard -->
   <div class="mid-row">
     <div class="panel">
@@ -636,7 +664,7 @@ header {
       </div>
       <div id="map"></div>
     </div>
-
+ 
     <div class="panel">
       <div class="panel-hdr">
         <span class="panel-ttl">🏆 Rep Leaderboard</span>
@@ -650,7 +678,7 @@ header {
       </div>
     </div>
   </div>
-
+ 
   <!-- Charts -->
   <div class="charts-row">
     <div class="chart-panel">
@@ -666,9 +694,23 @@ header {
       <div class="chart-body"><canvas id="zoneChart"></canvas></div>
     </div>
   </div>
-
+ 
+  <!-- Conversions -->
+  <div class="panel" id="convPanel" style="animation-delay:0.2s">
+    <div class="panel-hdr">
+      <span class="panel-ttl">🎯 New Customer Conversions</span>
+      <span class="panel-badge" id="convCount">0 conversions</span>
+    </div>
+    <div class="conv-wrap" id="convTable">
+      <div class="void">
+        <div class="void-ico">🎯</div>
+        <div class="void-sub">Load data to see conversions</div>
+      </div>
+    </div>
+  </div>
+ 
 </div><!-- /canvas -->
-
+ 
 <script>
 // ─────────────────────────────────────────────────────
 // CONSTANTS & STATE
@@ -678,9 +720,9 @@ const REP_COLORS  = ['#7340DC','#3BBB6C','#E040FB','#FF6B6B','#FFC107',
                      '#00BCD4','#FF8A65','#8BC34A','#F06292','#26C6DA'];
 const CHT_COLORS  = ['#7340DC','#9B6BF5','#3BBB6C','#BE93FF','#5CE69B',
                      '#C084FC','#6EE7B7','#A78BFA'];
-
+ 
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycby4svA_4IY9PUiLolMOIJXj322588Y6AdWUWtgtbcjYQvbWAtAKaEoW1PA2T4CdjrTp7g/exec';
-
+ 
 let leafMap        = null;
 let charts         = {};
 let cdTimer        = null;
@@ -690,7 +732,7 @@ let allRows        = [];
 let filterToday    = false;
 let filterPurpose  = 'All';
 let filterRep      = 'All';
-
+ 
 // ─────────────────────────────────────────────────────
 // MAP INIT
 // ─────────────────────────────────────────────────────
@@ -703,7 +745,7 @@ function initMap() {
   }).addTo(leafMap);
   leafMap.setView([5.6037, -0.1870], 11); // Default: Accra
 }
-
+ 
 // ─────────────────────────────────────────────────────
 // DATA FETCH
 // ─────────────────────────────────────────────────────
@@ -717,7 +759,7 @@ async function fetchSheet(webAppUrl) {
   if (!json.data) throw new Error('Unexpected response format. Make sure the doGet script is deployed correctly.');
   return json.data;
 }
-
+ 
 function parseTable(rows) {
   if (!Array.isArray(rows) || !rows.length) return [];
   return rows.map(row => {
@@ -728,7 +770,7 @@ function parseTable(rows) {
     return obj;
   });
 }
-
+ 
 // ─────────────────────────────────────────────────────
 // MAIN LOAD
 // ─────────────────────────────────────────────────────
@@ -752,7 +794,7 @@ async function loadData() {
     setLoading(false);
   }
 }
-
+ 
 function startCountdown() {
   clearInterval(cdTimer);
   cdSec = REFRESH_SEC;
@@ -778,18 +820,18 @@ function startCountdown() {
     }
   }, 1000);
 }
-
+ 
 function updateCd() {
   document.getElementById('cdText').textContent =
     cdSec > 0 ? `Refresh in ${cdSec}s` : 'Refreshing…';
 }
-
+ 
 // ─────────────────────────────────────────────────────
 // FILTERS
 // ─────────────────────────────────────────────────────
 function applyFilters(rows) {
   let out = rows;
-
+ 
   if (filterToday) {
     const todayStr = new Date().toDateString();
     out = out.filter(r => {
@@ -806,22 +848,22 @@ function applyFilters(rows) {
       return d.toDateString() === todayStr;
     });
   }
-
+ 
   if (filterPurpose !== 'All') {
     out = out.filter(r => {
       const p = (r['Purpose of visit'] || '').toLowerCase();
       return p.includes(filterPurpose.toLowerCase());
     });
   }
-
+ 
   if (filterRep !== 'All') {
     out = out.filter(r => (r['Rep Name'] || '') === filterRep);
   }
-
+ 
   document.getElementById('filterCountNum').textContent = out.length;
   return out;
 }
-
+ 
 function setToday(on) {
   filterToday = on;
   document.getElementById('chipAll').classList.toggle('active', !on);
@@ -829,7 +871,7 @@ function setToday(on) {
   const filtered = applyFilters(allRows);
   filtered.length ? render(filtered) : showEmpty();
 }
-
+ 
 function toggleRep(el) {
   filterRep = el.dataset.rep;
   document.querySelectorAll('#repChips .chip').forEach(c => c.classList.remove('active'));
@@ -837,7 +879,7 @@ function toggleRep(el) {
   const filtered = applyFilters(allRows);
   filtered.length ? render(filtered) : showEmpty();
 }
-
+ 
 function buildRepChips(rows) {
   const reps = [...new Set(rows.map(r => r['Rep Name']).filter(Boolean))].sort();
   const container = document.getElementById('repChips');
@@ -853,7 +895,7 @@ function buildRepChips(rows) {
   document.getElementById('repFilterBar').style.display = 'flex';
   filterRep = 'All';
 }
-
+ 
 function togglePurpose(el) {
   filterPurpose = el.dataset.purpose;
   document.querySelectorAll('#purposeChips .chip').forEach(c => c.classList.remove('active'));
@@ -861,7 +903,7 @@ function togglePurpose(el) {
   const filtered = applyFilters(allRows);
   filtered.length ? render(filtered) : showEmpty();
 }
-
+ 
 // ─────────────────────────────────────────────────────
 // RENDER ALL SECTIONS
 // ─────────────────────────────────────────────────────
@@ -869,15 +911,16 @@ function render(rows) {
   const repNames    = [...new Set(rows.map(r => r['Rep Name']).filter(Boolean))];
   const colorMap    = {};
   repNames.forEach((n, i) => colorMap[n] = REP_COLORS[i % REP_COLORS.length]);
-
+ 
   renderKPIs(rows);
   renderMap(rows, colorMap);
   renderLeaderboard(rows, colorMap);
   renderPurposeChart(rows);
   renderFacilityChart(rows);
   renderZoneChart(rows);
+  renderConversions(rows);
 }
-
+ 
 // ─────────────────────────────────────────────────────
 // KPIs
 // ─────────────────────────────────────────────────────
@@ -889,22 +932,29 @@ function renderKPIs(rows) {
   const avgDur       = durs.length ? Math.round(durs.reduce((a,b)=>a+b,0)/durs.length) : 0;
   const newCount     = rows.filter(r => /yes/i.test(r['Is the Facility a new or potential customer?'] || '')).length;
   const newPct       = totalVisits ? Math.round((newCount/totalVisits)*100) : 0;
-
+ 
   const orderCol     = 'Did this visit result in an order?';
   const orders       = rows.filter(r => /yes/i.test(r[orderCol] || '')).length;
   const productivity = totalVisits ? Math.round((orders/totalVisits)*100) : 0;
-
+ 
+  // Conversions — new/potential customers that placed an order
+  const conversions  = rows.filter(r =>
+    /yes/i.test(r['Is the Facility a new or potential customer?'] || '') &&
+    /yes/i.test(r[orderCol] || '')
+  ).length;
+ 
   const kpis = [
-    { ico:'📍', val: totalVisits,       lbl:'Total Visits',              color:'#9B6BF5', bg:'rgba(115,64,220,0.12)'  },
-    { ico:'👤', val: activeReps,        lbl:'Active Reps',               color:'#BE93FF', bg:'rgba(190,147,255,0.12)' },
-    { ico:'🏥', val: uniqFac,           lbl:'Unique Facilities',          color:'#3BBB6C', bg:'rgba(59,187,108,0.12)'  },
-    { ico:'⏱',  val: avgDur + ' min',   lbl:'Avg Visit Duration',         color:'#6EE7B7', bg:'rgba(110,231,183,0.10)' },
-    { ico:'⭐', val: newPct + '%',      lbl:'New / Potential Customers',  color:'#FFC107', bg:'rgba(255,193,7,0.10)'   },
-    { ico:'🛒', val: productivity + '%',lbl:'Visit-to-Order Rate',        color:'#FF6B6B', bg:'rgba(255,107,107,0.10)' },
+    { ico:'📍', val: totalVisits,       lbl:'Total Visits',              color:'#9B6BF5', bg:'rgba(115,64,220,0.08)'  },
+    { ico:'👤', val: activeReps,        lbl:'Active Reps',               color:'#7340DC', bg:'rgba(115,64,220,0.08)'  },
+    { ico:'🏥', val: uniqFac,           lbl:'Unique Facilities',          color:'#3BBB6C', bg:'rgba(59,187,108,0.08)'  },
+    { ico:'⏱',  val: avgDur + ' min',   lbl:'Avg Visit Duration',         color:'#1E9E55', bg:'rgba(30,158,85,0.08)'   },
+    { ico:'⭐', val: newPct + '%',      lbl:'New / Potential Customers',  color:'#7340DC', bg:'rgba(115,64,220,0.08)'  },
+    { ico:'🛒', val: productivity + '%',lbl:'Visit-to-Order Rate',        color:'#E53935', bg:'rgba(229,57,53,0.07)'   },
+    { ico:'🎯', val: conversions,       lbl:'New Customer Conversions',   color:'#1E9E55', bg:'rgba(30,158,85,0.08)'   },
   ];
-
-  document.getElementById('kpiRow').style.gridTemplateColumns = 'repeat(6, 1fr)';
-
+ 
+  document.getElementById('kpiRow').style.gridTemplateColumns = 'repeat(7, 1fr)';
+ 
   document.getElementById('kpiRow').innerHTML = kpis.map((k, i) => `
     <div class="kpi-card" style="animation-delay:${i*0.07}s">
       <div class="kpi-icon" style="background:${k.bg}">${k.ico}</div>
@@ -914,30 +964,30 @@ function renderKPIs(rows) {
       </div>
     </div>`).join('');
 }
-
+ 
 // ─────────────────────────────────────────────────────
 // MAP
 // ─────────────────────────────────────────────────────
 function renderMap(rows, colorMap) {
   initMap();
-
+ 
   // Remove old markers
   leafMap.eachLayer(l => {
     if (l instanceof L.CircleMarker) leafMap.removeLayer(l);
   });
-
+ 
   const geo = rows.filter(r => {
     const lat = parseFloat(r['Latitude']), lng = parseFloat(r['Longitude']);
     return !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0;
   });
-
+ 
   const bounds = [];
-
+ 
   geo.forEach(r => {
     const lat   = parseFloat(r['Latitude']);
     const lng   = parseFloat(r['Longitude']);
     const color = colorMap[r['Rep Name']] || '#7340DC';
-
+ 
     L.circleMarker([lat, lng], {
       radius: 9, fillColor: color,
       color: 'rgba(255,255,255,0.25)', weight: 1.5,
@@ -958,14 +1008,14 @@ function renderMap(rows, colorMap) {
       return el;
     }, { className: 'drk-popup' })
     .addTo(leafMap);
-
+ 
     bounds.push([lat, lng]);
   });
-
+ 
   if (bounds.length > 0) leafMap.fitBounds(bounds, { padding: [36, 36], maxZoom: 14 });
   document.getElementById('plotCount').textContent = geo.length + ' visits plotted';
 }
-
+ 
 // ─────────────────────────────────────────────────────
 // LEADERBOARD
 // ─────────────────────────────────────────────────────
@@ -979,17 +1029,17 @@ function renderLeaderboard(rows, colorMap) {
     const d = parseFloat(r['Duration']);
     if (!isNaN(d) && d > 0) stats[n].durs.push(d);
   });
-
+ 
   const sorted = Object.values(stats).sort((a,b) => b.visits - a.visits);
   const maxV   = sorted[0]?.visits || 1;
-
+ 
   document.getElementById('repCount').textContent = sorted.length + ' rep' + (sorted.length !== 1 ? 's' : '');
-
+ 
   if (!sorted.length) {
     document.getElementById('lboard').innerHTML = '<div class="void"><div class="void-sub">No rep data found in sheet</div></div>';
     return;
   }
-
+ 
   document.getElementById('lboard').innerHTML = `
     <table class="lboard-table">
       <thead>
@@ -1033,7 +1083,7 @@ function renderLeaderboard(rows, colorMap) {
       </tbody>
     </table>`;
 }
-
+ 
 // ─────────────────────────────────────────────────────
 // CHARTS
 // ─────────────────────────────────────────────────────
@@ -1052,11 +1102,11 @@ const baseOpts = {
     }
   }
 };
-
+ 
 function killChart(id) {
   if (charts[id]) { charts[id].destroy(); charts[id] = null; }
 }
-
+ 
 function renderPurposeChart(rows) {
   killChart('purpose');
   const counts = {};
@@ -1068,7 +1118,7 @@ function renderPurposeChart(rows) {
   const labels = Object.keys(counts);
   const data   = Object.values(counts);
   if (!labels.length) return;
-
+ 
   charts.purpose = new Chart(document.getElementById('purposeChart'), {
     type: 'bar',
     data: {
@@ -1092,7 +1142,7 @@ function renderPurposeChart(rows) {
     }
   });
 }
-
+ 
 function renderFacilityChart(rows) {
   killChart('facility');
   const counts = {};
@@ -1100,7 +1150,7 @@ function renderFacilityChart(rows) {
   const labels = Object.keys(counts);
   const data   = Object.values(counts);
   if (!labels.length) return;
-
+ 
   charts.facility = new Chart(document.getElementById('facilityChart'), {
     type: 'doughnut',
     data: {
@@ -1124,7 +1174,7 @@ function renderFacilityChart(rows) {
     }
   });
 }
-
+ 
 function renderZoneChart(rows) {
   killChart('zone');
   const counts = {};
@@ -1132,7 +1182,7 @@ function renderZoneChart(rows) {
   const labels = Object.keys(counts).sort((a,b) => counts[b]-counts[a]);
   const data   = labels.map(l => counts[l]);
   if (!labels.length) return;
-
+ 
   charts.zone = new Chart(document.getElementById('zoneChart'), {
     type: 'bar',
     data: {
@@ -1155,14 +1205,88 @@ function renderZoneChart(rows) {
     }
   });
 }
-
+ 
+// ─────────────────────────────────────────────────────
+// CONVERSIONS TABLE
+// ─────────────────────────────────────────────────────
+function renderConversions(rows) {
+  const orderCol = 'Did this visit result in an order?';
+  const converted = rows.filter(r =>
+    /yes/i.test(r['Is the Facility a new or potential customer?'] || '') &&
+    /yes/i.test(r[orderCol] || '')
+  );
+ 
+  document.getElementById('convCount').textContent =
+    converted.length + ' conversion' + (converted.length !== 1 ? 's' : '');
+ 
+  if (!converted.length) {
+    document.getElementById('convTable').innerHTML = `
+      <div class="void">
+        <div class="void-ico">🎯</div>
+        <div class="void-ttl">No conversions yet</div>
+        <div class="void-sub">New or potential customers who placed an order will appear here.</div>
+      </div>`;
+    return;
+  }
+ 
+  // Sort newest first
+  const sorted = [...converted].sort((a, b) => {
+    const da = a['Timestamp'] ? new Date(typeof a['Timestamp'] === 'number'
+      ? (a['Timestamp'] - 25569) * 86400 * 1000 : a['Timestamp']) : 0;
+    const db = b['Timestamp'] ? new Date(typeof b['Timestamp'] === 'number'
+      ? (b['Timestamp'] - 25569) * 86400 * 1000 : b['Timestamp']) : 0;
+    return db - da;
+  });
+ 
+  document.getElementById('convTable').innerHTML = `
+    <table class="conv-table">
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Rep</th>
+          <th>Zone</th>
+          <th>Facility Type</th>
+          <th>Purpose</th>
+          <th>Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${sorted.map(r => {
+          const customerName = r['Customer Name'] || r['Facility'] || '—';
+          let dateStr = '—';
+          if (r['Date']) {
+            try {
+              const d = typeof r['Date'] === 'number'
+                ? new Date((r['Date'] - 25569) * 86400 * 1000)
+                : new Date(r['Date']);
+              dateStr = d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+            } catch(e) { dateStr = '—'; }
+          }
+          return `
+            <tr>
+              <td>
+                <div class="conv-name">${customerName}</div>
+              </td>
+              <td><span class="mono">${r['Rep Name'] || '—'}</span></td>
+              <td>${r['Zone'] || '—'}</td>
+              <td>${r['Facility Type'] || '—'}</td>
+              <td style="max-width:160px;font-size:11px;color:var(--text-muted)">${r['Purpose of visit'] || '—'}</td>
+              <td><span class="mono" style="font-size:11px">${dateStr}</span></td>
+              <td><span class="badge-converted">✓ Converted</span></td>
+            </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+}
+ 
 // ─────────────────────────────────────────────────────
 // UTILITIES
 // ─────────────────────────────────────────────────────
 function setLoading(on) {
   document.getElementById('veil').style.display = on ? 'flex' : 'none';
 }
-
+ 
 function showEmpty() {
   document.getElementById('kpiRow').innerHTML = `
     <div class="kpi-card" style="grid-column:1/-1;justify-content:center">
@@ -1173,29 +1297,29 @@ function showEmpty() {
       </div>
     </div>`;
 }
-
+ 
 // Bootstrap map and auto-load on open
 initMap();
 window.addEventListener('load', () => loadData());
-
+ 
 // ─────────────────────────────────────────────────────
 // FIREBASE AUTH
 // ─────────────────────────────────────────────────────
 const firebaseConfig = {
-  apiKey:            "AIzaSyDAvBkapFm3Z87fAbGusAKqFciz6ahhLX8",
-  authDomain:        "ascend-tracker-b93ef.firebaseapp.com",
-  projectId:         "ascend-tracker-b93ef",
+  apiKey:            "REPLACE_WITH_YOUR_API_KEY",
+  authDomain:        "REPLACE_WITH_YOUR_AUTH_DOMAIN",
+  projectId:         "REPLACE_WITH_YOUR_PROJECT_ID",
 };
-
+ 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-
+ 
 // Hide dashboard until auth confirmed
 document.querySelector('header').style.display            = 'none';
 document.getElementById('filterBar').style.display        = 'none';
 document.getElementById('repFilterBar').style.display     = 'none';
 document.querySelector('.canvas').style.display           = 'none';
-
+ 
 // Auth state listener — runs on every page load
 auth.onAuthStateChanged(user => {
   if (user) {
@@ -1214,23 +1338,23 @@ auth.onAuthStateChanged(user => {
     clearInterval(cdTimer);
   }
 });
-
+ 
 async function signIn() {
   const email    = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
   const errorEl  = document.getElementById('loginError');
   const btn      = document.getElementById('loginBtn');
   const spinner  = document.getElementById('loginSpinner');
-
+ 
   if (!email || !password) {
     showLoginError('Please enter your email and password.');
     return;
   }
-
+ 
   btn.disabled             = true;
   spinner.style.display    = 'inline-block';
   errorEl.classList.remove('show');
-
+ 
   try {
     await auth.signInWithEmailAndPassword(email, password);
     // onAuthStateChanged handles the rest
@@ -1251,17 +1375,17 @@ async function signIn() {
     }
   }
 }
-
+ 
 function signOut() {
   auth.signOut();
 }
-
+ 
 function showLoginError(msg) {
   const el = document.getElementById('loginError');
   el.textContent = msg;
   el.classList.add('show');
 }
-
+ 
 // Allow Enter key to submit login
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') {
