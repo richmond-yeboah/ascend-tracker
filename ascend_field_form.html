@@ -26,11 +26,11 @@
   --r:          14px;
   --shadow:     0 4px 24px rgba(115,64,220,0.1);
 }
-
+ 
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-
+ 
 html { scroll-behavior: smooth; }
-
+ 
 body {
   background: var(--bg);
   color: var(--text);
@@ -38,7 +38,7 @@ body {
   min-height: 100vh;
   padding-bottom: 40px;
 }
-
+ 
 /* ── HEADER ── */
 .header {
   background: linear-gradient(135deg, var(--primary-dk) 0%, var(--primary) 60%, #9B6BF5 100%);
@@ -46,7 +46,7 @@ body {
   position: relative;
   overflow: hidden;
 }
-
+ 
 .header::before {
   content: '';
   position: absolute; inset: 0;
@@ -54,12 +54,12 @@ body {
     radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%),
     radial-gradient(circle at 20% 80%, rgba(255,255,255,0.05) 0%, transparent 40%);
 }
-
+ 
 .header-inner {
   position: relative; z-index: 1;
   display: flex; align-items: center; gap: 12px;
 }
-
+ 
 .logo-badge {
   width: 44px; height: 44px; border-radius: 11px;
   background: rgba(255,255,255,0.15);
@@ -68,7 +68,7 @@ body {
   display: flex; align-items: center; justify-content: center;
   font-size: 22px; flex-shrink: 0;
 }
-
+ 
 .header-text .brand {
   font-size: 13px; font-weight: 800;
   letter-spacing: 0.08em; color: #fff;
@@ -77,7 +77,7 @@ body {
   font-size: 11px; color: rgba(255,255,255,0.65);
   letter-spacing: 0.04em; margin-top: 1px;
 }
-
+ 
 /* Progress bar */
 .progress-wrap {
   position: relative; z-index: 1;
@@ -97,14 +97,14 @@ body {
   font-size: 11px; color: rgba(255,255,255,0.7);
   font-family: var(--mono); white-space: nowrap;
 }
-
+ 
 /* ── FORM BODY ── */
 .form-body {
   padding: 20px 16px 0;
   max-width: 540px;
   margin: 0 auto;
 }
-
+ 
 /* ── SECTION ── */
 .section {
   background: var(--surface);
@@ -115,34 +115,34 @@ body {
   box-shadow: var(--shadow);
   animation: riseUp 0.35s ease both;
 }
-
+ 
 .section-hdr {
   padding: 12px 16px;
   background: var(--surface2);
   border-bottom: 1px solid var(--border);
   display: flex; align-items: center; gap: 8px;
 }
-
+ 
 .section-ico { font-size: 16px; }
-
+ 
 .section-ttl {
   font-size: 11px; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.08em;
   color: var(--text-muted);
 }
-
+ 
 .section-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; }
-
+ 
 /* ── FIELD ── */
 .field { display: flex; flex-direction: column; gap: 5px; }
-
+ 
 .field-label {
   font-size: 12px; font-weight: 600;
   color: var(--text-muted); letter-spacing: 0.02em;
 }
-
+ 
 .field-label .req { color: var(--primary); margin-left: 2px; }
-
+ 
 .field-input, .field-select, .field-textarea {
   width: 100%;
   background: var(--bg);
@@ -156,28 +156,28 @@ body {
   transition: border-color 0.2s, box-shadow 0.2s;
   -webkit-appearance: none;
 }
-
+ 
 .field-input:focus, .field-select:focus, .field-textarea:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(115,64,220,0.1);
 }
-
+ 
 .field-input::placeholder { color: var(--text-dim); }
 .field-textarea { resize: none; height: 80px; }
-
+ 
 /* ── SEARCHABLE FACILITY ── */
 .search-wrap { position: relative; }
-
+ 
 .search-input-wrap {
   position: relative; display: flex; align-items: center;
 }
-
+ 
 .search-input-wrap .search-ico {
   position: absolute; left: 12px;
   font-size: 16px; pointer-events: none;
   color: var(--text-dim);
 }
-
+ 
 .facility-input {
   width: 100%;
   background: var(--bg);
@@ -196,14 +196,14 @@ body {
   box-shadow: 0 0 0 3px rgba(115,64,220,0.1);
 }
 .facility-input::placeholder { color: var(--text-dim); }
-
+ 
 .facility-clear {
   position: absolute; right: 12px;
   background: none; border: none; cursor: pointer;
   color: var(--text-dim); font-size: 18px; line-height: 1;
   display: none; padding: 0;
 }
-
+ 
 .facility-dropdown {
   position: absolute; top: calc(100% + 4px); left: 0; right: 0;
   background: var(--surface);
@@ -215,9 +215,9 @@ body {
   overflow-y: auto;
   display: none;
 }
-
+ 
 .facility-dropdown.open { display: block; }
-
+ 
 .facility-option {
   padding: 11px 14px;
   font-size: 14px; color: var(--text);
@@ -234,18 +234,18 @@ body {
   color: var(--primary); border-radius: 2px;
   font-style: normal; font-weight: 700;
 }
-
+ 
 .facility-empty {
   padding: 16px; text-align: center;
   font-size: 13px; color: var(--text-dim);
 }
-
+ 
 .facility-loading {
   padding: 14px; text-align: center;
   font-size: 12px; color: var(--text-muted);
   font-family: var(--mono);
 }
-
+ 
 .selected-facility {
   display: none;
   align-items: center; justify-content: space-between;
@@ -266,12 +266,12 @@ body {
   text-decoration: underline; white-space: nowrap;
   background: none; border: none; font-family: var(--font);
 }
-
+ 
 /* ── RADIO / TOGGLE ── */
 .toggle-row {
   display: flex; gap: 8px;
 }
-
+ 
 .toggle-opt {
   flex: 1;
   display: flex; align-items: center; justify-content: center;
@@ -292,12 +292,12 @@ body {
   font-weight: 700;
 }
 .toggle-opt .opt-ico { font-size: 16px; }
-
+ 
 /* ── CHECKBOXES (purpose) ── */
 .check-grid {
   display: flex; flex-direction: column; gap: 8px;
 }
-
+ 
 .check-item {
   display: flex; align-items: center; gap: 10px;
   padding: 10px 12px;
@@ -312,7 +312,7 @@ body {
   background: var(--primary-dim);
   border-color: var(--primary);
 }
-
+ 
 .check-box {
   width: 20px; height: 20px; border-radius: 6px;
   border: 2px solid var(--border);
@@ -326,7 +326,7 @@ body {
 }
 .check-box svg { display: none; }
 .check-item:has(input:checked) .check-box svg { display: block; }
-
+ 
 .check-lbl {
   font-size: 14px; color: var(--text);
   flex: 1; line-height: 1.3;
@@ -334,7 +334,7 @@ body {
 .check-item:has(input:checked) .check-lbl {
   color: var(--primary); font-weight: 600;
 }
-
+ 
 /* ── MAP LINK ── */
 .map-hint {
   font-size: 12px; color: var(--text-dim);
@@ -344,16 +344,16 @@ body {
   border-radius: 8px;
   border-left: 3px solid var(--primary-dim);
 }
-
+ 
 /* ── TIME ROW ── */
 .time-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
+ 
 /* ── SUBMIT BUTTON ── */
 .submit-wrap {
   padding: 0 16px 20px;
   max-width: 540px; margin: 0 auto;
 }
-
+ 
 .btn-submit {
   width: 100%;
   background: linear-gradient(135deg, var(--primary-dk), var(--primary));
@@ -368,7 +368,7 @@ body {
 }
 .btn-submit:active { transform: scale(0.98); opacity: 0.9; }
 .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
-
+ 
 /* ── SUCCESS SCREEN ── */
 .success-screen {
   display: none;
@@ -379,7 +379,7 @@ body {
   animation: riseUp 0.4s ease;
 }
 .success-screen.show { display: flex; }
-
+ 
 .success-ico {
   width: 80px; height: 80px; border-radius: 50%;
   background: var(--green-dim);
@@ -387,17 +387,17 @@ body {
   display: flex; align-items: center; justify-content: center;
   font-size: 38px; margin-bottom: 20px;
 }
-
+ 
 .success-ttl {
   font-size: 22px; font-weight: 800; color: var(--text);
   margin-bottom: 8px;
 }
-
+ 
 .success-sub {
   font-size: 14px; color: var(--text-muted); line-height: 1.6;
   max-width: 280px; margin-bottom: 28px;
 }
-
+ 
 .btn-another {
   background: var(--primary);
   color: #fff; border: none; border-radius: 12px;
@@ -406,7 +406,7 @@ body {
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(115,64,220,0.3);
 }
-
+ 
 /* ── TOAST ── */
 .toast {
   position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
@@ -419,7 +419,7 @@ body {
   white-space: normal; text-align: center;
 }
 .toast.show { transform: translateX(-50%) translateY(0); }
-
+ 
 /* ── SUBMITTING OVERLAY ── */
 .submitting-veil {
   display: none; position: fixed; inset: 0;
@@ -437,26 +437,26 @@ body {
   animation: spin 0.75s linear infinite;
 }
 .spinner-lbl { font-size: 13px; color: var(--text-muted); font-family: var(--mono); }
-
+ 
 @keyframes spin   { to { transform: rotate(360deg); } }
 @keyframes riseUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-
+ 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(115,64,220,0.2); border-radius: 2px; }
 </style>
 </head>
 <body>
-
+ 
 <!-- Submitting overlay -->
 <div class="submitting-veil" id="submittingVeil">
   <div class="spinner"></div>
   <div class="spinner-lbl">Submitting visit…</div>
 </div>
-
+ 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
-
+ 
 <!-- Header -->
 <div class="header">
   <div class="header-inner">
@@ -471,11 +471,11 @@ body {
     <div class="progress-label" id="progressLabel">0 / 7</div>
   </div>
 </div>
-
+ 
 <!-- ── FORM ── -->
 <div id="mainForm">
 <div class="form-body">
-
+ 
   <!-- Rep Info -->
   <div class="section" style="animation-delay:0.05s">
     <div class="section-hdr">
@@ -483,22 +483,22 @@ body {
       <span class="section-ttl">Rep Information</span>
     </div>
     <div class="section-body">
-
+ 
       <div class="field">
         <label class="field-label">Rep Name <span class="req">*</span></label>
         <select class="field-select" id="repName">
           <option value="">Select your name…</option>
         </select>
       </div>
-
+ 
       <div class="field">
         <label class="field-label">Visit Date <span class="req">*</span></label>
         <input type="date" class="field-input" id="visitDate">
       </div>
-
+ 
     </div>
   </div>
-
+ 
   <!-- Facility -->
   <div class="section" style="animation-delay:0.1s">
     <div class="section-hdr">
@@ -506,41 +506,7 @@ body {
       <span class="section-ttl">Facility</span>
     </div>
     <div class="section-body">
-
-      <div class="field">
-        <label class="field-label">Facility Name <span class="req">*</span></label>
-        <div class="search-wrap">
-          <!-- Selected state -->
-          <div class="selected-facility" id="selectedFacility">
-            <span class="selected-fac-name" id="selectedFacName"></span>
-            <button class="selected-fac-change" onclick="clearFacility()">Change</button>
-          </div>
-          <!-- Search input -->
-          <div class="search-input-wrap" id="facilitySearchWrap">
-            <span class="search-ico">🔍</span>
-            <input type="text" class="facility-input" id="facilitySearch"
-                   placeholder="Search facility name…"
-                   autocomplete="off" autocorrect="off" spellcheck="false">
-            <button class="facility-clear" id="facilityClear" onclick="clearSearch()">✕</button>
-          </div>
-          <div class="facility-dropdown" id="facilityDropdown">
-            <div class="facility-loading">Loading facilities…</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="field-label">Facility Type <span class="req">*</span></label>
-        <select class="field-select" id="facilityType">
-          <option value="">Select type…</option>
-          <option>Institution</option>
-          <option>Retail</option>
-          <option>Wholesale</option>
-          <option>Individual</option>
-          <option>Prescriber</option>
-        </select>
-      </div>
-
+ 
       <div class="field">
         <label class="field-label">New or Potential Customer? <span class="req">*</span></label>
         <div class="toggle-row">
@@ -554,15 +520,49 @@ body {
           </label>
         </div>
       </div>
-
+ 
+      <!-- Existing customer — searchable dropdown -->
+      <div class="field" id="facilitySearchField">
+        <label class="field-label">Facility Name <span class="req">*</span></label>
+        <div class="search-wrap">
+          <div class="selected-facility" id="selectedFacility">
+            <span class="selected-fac-name" id="selectedFacName"></span>
+            <button class="selected-fac-change" onclick="clearFacility()">Change</button>
+          </div>
+          <div class="search-input-wrap" id="facilitySearchWrap">
+            <span class="search-ico">🔍</span>
+            <input type="text" class="facility-input" id="facilitySearch"
+                   placeholder="Search facility name…"
+                   autocomplete="off" autocorrect="off" spellcheck="false">
+            <button class="facility-clear" id="facilityClear" onclick="clearSearch()">✕</button>
+          </div>
+          <div class="facility-dropdown" id="facilityDropdown">
+            <div class="facility-loading">Loading facilities…</div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- New customer — type the name -->
       <div class="field" id="newCustomerNameField" style="display:none">
         <label class="field-label">Customer Name <span class="req">*</span></label>
-        <input type="text" class="field-input" id="newCustomerName" placeholder="Enter customer name…">
+        <input type="text" class="field-input" id="newCustomerName" placeholder="Enter new customer name…">
       </div>
-
+ 
+      <div class="field">
+        <label class="field-label">Facility Type <span class="req">*</span></label>
+        <select class="field-select" id="facilityType">
+          <option value="">Select type…</option>
+          <option>Institution</option>
+          <option>Retail</option>
+          <option>Wholesale</option>
+          <option>Individual</option>
+          <option>Prescriber</option>
+        </select>
+      </div>
+ 
     </div>
   </div>
-
+ 
   <!-- Visit Details -->
   <div class="section" style="animation-delay:0.15s">
     <div class="section-hdr">
@@ -570,7 +570,7 @@ body {
       <span class="section-ttl">Visit Details</span>
     </div>
     <div class="section-body">
-
+ 
       <div class="field">
         <label class="field-label">Purpose of Visit <span class="req">*</span></label>
         <div class="check-grid">
@@ -611,7 +611,7 @@ body {
           </label>
         </div>
       </div>
-
+ 
       <div class="field">
         <label class="field-label">Did this visit result in an Order? <span class="req">*</span></label>
         <div class="toggle-row">
@@ -625,10 +625,10 @@ body {
           </label>
         </div>
       </div>
-
+ 
     </div>
   </div>
-
+ 
   <!-- Location & Time -->
   <div class="section" style="animation-delay:0.2s">
     <div class="section-hdr">
@@ -636,7 +636,7 @@ body {
       <span class="section-ttl">Location &amp; Time</span>
     </div>
     <div class="section-body">
-
+ 
       <div class="field">
         <label class="field-label">Current Location Link <span class="req">*</span></label>
         <input type="url" class="field-input" id="mapLink"
@@ -645,7 +645,7 @@ body {
           📱 Open Google Maps → Tap the blue dot (your location) → Tap <strong>Share</strong> → Copy link → Paste here
         </div>
       </div>
-
+ 
       <div class="time-row">
         <div class="field">
           <label class="field-label">Arrival Time <span class="req">*</span></label>
@@ -656,19 +656,19 @@ body {
           <input type="time" class="field-input" id="departureTime">
         </div>
       </div>
-
+ 
     </div>
   </div>
-
+ 
 </div><!-- /form-body -->
-
+ 
 <div class="submit-wrap">
   <button class="btn-submit" id="submitBtn" onclick="submitForm()">
     <span>Submit Visit Report</span> <span>→</span>
   </button>
 </div>
 </div><!-- /mainForm -->
-
+ 
 <!-- Success Screen -->
 <div class="success-screen" id="successScreen">
   <div class="success-ico">✅</div>
@@ -676,20 +676,20 @@ body {
   <div class="success-sub">Your field visit has been recorded successfully. Keep up the great work!</div>
   <button class="btn-another" onclick="resetForm()">Log Another Visit</button>
 </div>
-
+ 
 <script>
 // ─────────────────────────────────────────────────────
 // CONFIG — same Web App URL as the dashboard
 // ─────────────────────────────────────────────────────
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby4svA_4IY9PUiLolMOIJXj322588Y6AdWUWtgtbcjYQvbWAtAKaEoW1PA2T4CdjrTp7g/exec';
-
+ 
 // ─────────────────────────────────────────────────────
 // STATE
 // ─────────────────────────────────────────────────────
 let allFacilities   = [];
 let selectedFacility = '';
 let focusedIndex    = -1;
-
+ 
 // ─────────────────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────────────────
@@ -711,12 +711,12 @@ window.addEventListener('load', () => {
     el.addEventListener('input', updateProgress);
   });
 });
-
+ 
 function setTodayDate() {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('visitDate').value = today;
 }
-
+ 
 // ─────────────────────────────────────────────────────
 // LOAD REPS + FACILITIES FROM SHEET
 // ─────────────────────────────────────────────────────
@@ -724,21 +724,21 @@ async function loadRepsAndFacilities() {
   try {
     const res  = await fetch(WEB_APP_URL);
     const json = await res.json();
-
+ 
     // Populate reps from Rep Directory data if available, else from submissions
     if (json.reps && json.reps.length) {
       populateReps(json.reps);
     }
-
+ 
     // Populate facilities
     if (json.facilities && json.facilities.length) {
       allFacilities = json.facilities.filter(Boolean).sort();
     }
-
+ 
     // Update dropdown placeholder
     const dd = document.getElementById('facilityDropdown');
     dd.innerHTML = '<div class="facility-empty">Start typing to search…</div>';
-
+ 
   } catch(e) {
     console.error('Failed to load reps/facilities:', e);
     // Fallback — still allow manual entry
@@ -746,7 +746,7 @@ async function loadRepsAndFacilities() {
       '<div class="facility-empty">Could not load facility list. Type facility name manually.</div>';
   }
 }
-
+ 
 function populateReps(reps) {
   const sel = document.getElementById('repName');
   sel.innerHTML = '<option value="">Select your name…</option>';
@@ -756,7 +756,7 @@ function populateReps(reps) {
     sel.appendChild(opt);
   });
 }
-
+ 
 // ─────────────────────────────────────────────────────
 // FACILITY SEARCH
 // ─────────────────────────────────────────────────────
@@ -765,18 +765,18 @@ function filterFacilities(query) {
   const q = query.toLowerCase();
   return allFacilities.filter(f => f.toLowerCase().includes(q)).slice(0, 60);
 }
-
+ 
 function onFacilitySearch() {
   const val = document.getElementById('facilitySearch').value;
   document.getElementById('facilityClear').style.display = val ? 'block' : 'none';
   focusedIndex = -1;
   showDropdown(filterFacilities(val));
 }
-
+ 
 function showDropdown(results) {
   const dd = document.getElementById('facilityDropdown');
   const query = document.getElementById('facilitySearch').value.trim();
-
+ 
   if (!results.length) {
     dd.innerHTML = '<div class="facility-empty">No facilities found</div>';
   } else {
@@ -789,12 +789,12 @@ function showDropdown(results) {
   }
   dd.classList.add('open');
 }
-
+ 
 function closeDropdown() {
   document.getElementById('facilityDropdown').classList.remove('open');
   focusedIndex = -1;
 }
-
+ 
 function selectFacility(name) {
   selectedFacility = name;
   document.getElementById('selectedFacName').textContent = name;
@@ -803,7 +803,7 @@ function selectFacility(name) {
   closeDropdown();
   updateProgress();
 }
-
+ 
 function clearFacility() {
   selectedFacility = '';
   document.getElementById('selectedFacility').classList.remove('show');
@@ -813,18 +813,18 @@ function clearFacility() {
   document.getElementById('facilitySearch').focus();
   updateProgress();
 }
-
+ 
 function clearSearch() {
   document.getElementById('facilitySearch').value = '';
   document.getElementById('facilityClear').style.display = 'none';
   document.getElementById('facilityDropdown').innerHTML = '<div class="facility-empty">Start typing to search…</div>';
   document.getElementById('facilitySearch').focus();
 }
-
+ 
 function onFacilityKeydown(e) {
   const opts = document.querySelectorAll('.facility-option');
   if (!opts.length) return;
-
+ 
   if (e.key === 'ArrowDown') {
     e.preventDefault();
     focusedIndex = Math.min(focusedIndex + 1, opts.length - 1);
@@ -840,21 +840,37 @@ function onFacilityKeydown(e) {
     closeDropdown();
   }
 }
-
+ 
 function updateFocused(opts) {
   opts.forEach((o, i) => o.classList.toggle('focused', i === focusedIndex));
   if (focusedIndex >= 0) opts[focusedIndex].scrollIntoView({ block: 'nearest' });
 }
-
+ 
 function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
-
+ 
 function toggleNewCustomer(el) {
-  const field = document.getElementById('newCustomerNameField');
-  field.style.display = el.value === 'Yes' ? 'flex' : 'none';
-  if (el.value === 'No') document.getElementById('newCustomerName').value = '';
+  const isNew        = el.value === 'Yes';
+  const searchField  = document.getElementById('facilitySearchField');
+  const newNameField = document.getElementById('newCustomerNameField');
+ 
+  if (isNew) {
+    // New customer — hide search, show text input
+    searchField.style.display  = 'none';
+    newNameField.style.display = 'flex';
+    // Clear any selected facility
+    selectedFacility = '';
+    document.getElementById('selectedFacility').classList.remove('show');
+    document.getElementById('facilitySearchWrap').style.display = '';
+    document.getElementById('facilitySearch').value = '';
+  } else {
+    // Existing customer — show search, hide text input
+    searchField.style.display  = 'flex';
+    newNameField.style.display = 'none';
+    document.getElementById('newCustomerName').value = '';
+  }
   updateProgress();
 }
-
+ 
 // ─────────────────────────────────────────────────────
 // PROGRESS BAR
 // ─────────────────────────────────────────────────────
@@ -862,7 +878,9 @@ function updateProgress() {
   const fields = [
     !!document.getElementById('repName').value,
     !!document.getElementById('visitDate').value,
-    !!selectedFacility,
+    !!(document.querySelector('input[name="newCustomer"]:checked')?.value === 'Yes'
+       ? document.getElementById('newCustomerName').value.trim()
+       : selectedFacility),
     !!document.getElementById('facilityType').value,
     document.querySelectorAll('input[name="purpose"]:checked').length > 0,
     !!document.getElementById('mapLink').value,
@@ -873,24 +891,24 @@ function updateProgress() {
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('progressLabel').textContent = `${done} / ${fields.length}`;
 }
-
+ 
 // ─────────────────────────────────────────────────────
 // FORM SUBMISSION
 // ─────────────────────────────────────────────────────
 async function submitForm() {
   // Collect values
-  const repName      = document.getElementById('repName').value.trim();
-  const visitDate    = document.getElementById('visitDate').value;
-  const facility     = selectedFacility;
-  const facilityType = document.getElementById('facilityType').value;
+  const repName         = document.getElementById('repName').value.trim();
+  const visitDate       = document.getElementById('visitDate').value;
+  const facilityType    = document.getElementById('facilityType').value;
   const newCustomer     = document.querySelector('input[name="newCustomer"]:checked')?.value || 'No';
   const newCustomerName = newCustomer === 'Yes' ? document.getElementById('newCustomerName').value.trim() : '';
+  const facility        = newCustomer === 'Yes' ? newCustomerName : selectedFacility;
   const purposes        = [...document.querySelectorAll('input[name="purpose"]:checked')].map(c => c.value);
   const order           = document.querySelector('input[name="order"]:checked')?.value || 'No';
   const mapLink         = document.getElementById('mapLink').value.trim();
   const arrivalTime     = document.getElementById('arrivalTime').value;
   const departureTime   = document.getElementById('departureTime').value;
-
+ 
   // Validate
   if (!repName)         return showToast('Please select your name');
   if (!visitDate)       return showToast('Please enter the visit date');
@@ -902,7 +920,7 @@ async function submitForm() {
   if (!arrivalTime)     return showToast('Please enter your arrival time');
   if (!departureTime)   return showToast('Please enter your departure time');
   if (arrivalTime >= departureTime) return showToast('Departure time must be after arrival time');
-
+ 
   const payload = {
     action:          'submit',
     timestamp:       new Date().toISOString(),
@@ -918,10 +936,10 @@ async function submitForm() {
     arrivalTime,
     departureTime,
   };
-
+ 
   document.getElementById('submittingVeil').classList.add('show');
   document.getElementById('submitBtn').disabled = true;
-
+ 
   try {
     await fetch(WEB_APP_URL, {
       method: 'POST',
@@ -936,7 +954,7 @@ async function submitForm() {
     showToast('Submission failed. Check your connection and try again.');
   }
 }
-
+ 
 // ─────────────────────────────────────────────────────
 // RESET
 // ─────────────────────────────────────────────────────
@@ -959,7 +977,7 @@ function resetForm() {
   updateProgress();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
+ 
 // ─────────────────────────────────────────────────────
 // TOAST
 // ─────────────────────────────────────────────────────
@@ -972,3 +990,4 @@ function showToast(msg) {
 </script>
 </body>
 </html>
+ 
