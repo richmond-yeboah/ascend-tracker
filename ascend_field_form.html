@@ -602,8 +602,6 @@ let clockTimer       = null;
 // INIT
 // ─────────────────────────────────────────────────────
 window.addEventListener('load', () => {
-  captureArrivalTime();
-  startLiveClock();
   loadRepsAndFacilities();
 
   document.getElementById('facilitySearch').addEventListener('input', onFacilitySearch);
@@ -614,6 +612,51 @@ window.addEventListener('load', () => {
   document.addEventListener('click', e => {
     if (!e.target.closest('.search-wrap')) closeDropdown();
   });
+
+  // Restore saved state if page was reloaded on step 2
+  const savedStep = localStorage.getItem('ascend_step');
+  const savedData = localStorage.getItem('ascend_data');
+
+  if (savedStep === '2' && savedData) {
+    try {
+      const d = JSON.parse(savedData);
+      arrivalDate = new Date(d.arrivalDateISO);
+      arrivalTime = d.arrivalTime;
+
+      // Restore summary
+      document.getElementById('sumRep').textContent      = d.repName;
+      document.getElementById('sumFacility').textContent = d.facility;
+      document.getElementById('sumArrival').textContent  = d.arrivalTime;
+
+      // Show step 2 directly
+      document.getElementById('step1').style.display = 'none';
+      document.getElementById('step2').style.display = 'block';
+
+      // Update step indicator
+      document.getElementById('circle1').classList.remove('active');
+      document.getElementById('circle1').classList.add('done');
+      document.getElementById('circle1').textContent = '✓';
+      document.getElementById('label1').classList.remove('active');
+      document.getElementById('desc1').classList.remove('active');
+      document.getElementById('circle2').classList.add('active');
+      document.getElementById('label2').classList.add('active');
+      document.getElementById('desc2').classList.add('active');
+
+      // Start departure clock
+      captureDepartureTime();
+      clockTimer = setInterval(() => captureDepartureTime(), 1000);
+
+      showToast('Your arrival details were restored after the page reloaded.');
+      return;
+    } catch(e) {
+      localStorage.removeItem('ascend_step');
+      localStorage.removeItem('ascend_data');
+    }
+  }
+
+  // Normal step 1 start
+  captureArrivalTime();
+  startLiveClock();
 });
 
 // ─────────────────────────────────────────────────────
@@ -705,6 +748,19 @@ function goToStep2() {
   arrivalTime = formatTime(arrivalDate);
   clearInterval(clockTimer);
 
+  // Save step 1 data to localStorage so it survives page reloads
+  localStorage.setItem('ascend_step', '2');
+  localStorage.setItem('ascend_data', JSON.stringify({
+    repName,
+    newCustomer,
+    newCustName,
+    facility,
+    facilityType: facType,
+    mapLink,
+    arrivalTime,
+    arrivalDateISO: arrivalDate.toISOString(),
+  }));
+
   // Populate summary
   document.getElementById('sumRep').textContent     = repName;
   document.getElementById('sumFacility').textContent = facility;
@@ -736,6 +792,8 @@ function goToStep2() {
 
 function backToStep1() {
   clearInterval(clockTimer);
+  localStorage.removeItem('ascend_step');
+  localStorage.removeItem('ascend_data');
   document.getElementById('step1').style.display = 'block';
   document.getElementById('step2').style.display = 'none';
 
@@ -894,6 +952,8 @@ async function submitForm() {
 
   try {
     await fetch(WEB_APP_URL, { method:'POST', body:JSON.stringify(payload) });
+    localStorage.removeItem('ascend_step');
+    localStorage.removeItem('ascend_data');
     document.getElementById('submittingVeil').classList.remove('show');
     document.getElementById('step2').style.display = 'none';
     document.getElementById('successScreen').classList.add('show');
@@ -908,6 +968,8 @@ async function submitForm() {
 // RESET
 // ─────────────────────────────────────────────────────
 function resetForm() {
+  localStorage.removeItem('ascend_step');
+  localStorage.removeItem('ascend_data');
   document.getElementById('successScreen').classList.remove('show');
   document.getElementById('step1').style.display = 'block';
   document.getElementById('step2').style.display = 'none';
