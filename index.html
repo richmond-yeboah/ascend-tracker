@@ -37,7 +37,7 @@ body {
   color: var(--text);
   font-family: var(--font);
   min-height: 100vh;
-  overflow-x: auto;
+  overflow-x: hidden;
 }
  
 body::before {
@@ -184,7 +184,6 @@ header {
   position: relative; z-index: 5;
   padding: 20px 28px;
   display: flex; flex-direction: column; gap: 18px;
-  min-width: 900px;
 }
  
 /* ── KPI ROW ─────────────────────────────────────── */
@@ -192,7 +191,6 @@ header {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 14px;
-  min-width: 860px;
 }
  
 .kpi-card {
@@ -235,7 +233,6 @@ header {
   display: grid;
   grid-template-columns: 1fr 360px;
   gap: 14px;
-  min-width: 860px;
 }
  
 .panel {
@@ -319,7 +316,6 @@ header {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 14px;
-  min-width: 860px;
 }
  
 .chart-panel {
@@ -534,10 +530,17 @@ header {
   border: 1px solid rgba(30,158,85,0.2);
 }
  
+@media (max-width: 1100px) {
+  .kpi-row    { grid-template-columns: repeat(3, 1fr); }
+  .mid-row    { grid-template-columns: 1fr; }
+  .charts-row { grid-template-columns: 1fr 1fr; }
+}
 @media (max-width: 700px) {
   .canvas { padding: 12px 14px; }
   header  { padding: 10px 14px; }
   .header-center { display: none; }
+  .kpi-row    { grid-template-columns: repeat(2, 1fr); }
+  .charts-row { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -620,7 +623,7 @@ header {
     <div class="chip active" data-purpose="All" onclick="togglePurpose(this)">All</div>
     <div class="chip" data-purpose="Product Promotion" onclick="togglePurpose(this)">Product Promotion</div>
     <div class="chip" data-purpose="Sales & Order Generation" onclick="togglePurpose(this)">Sales &amp; Order Generation</div>
-    <div class="chip" data-purpose="Customer Relationship Management" onclick="togglePurpose(this)">Customer Relationship Mgmt</div>
+    <div class="chip" data-purpose="Customer Replacement Management" onclick="togglePurpose(this)">Customer Replacement Mgmt</div>
     <div class="chip" data-purpose="Product Education & Training" onclick="togglePurpose(this)">Product Education &amp; Training</div>
     <div class="chip" data-purpose="Distribution & Supply Follow-up" onclick="togglePurpose(this)">Distribution &amp; Supply Follow-up</div>
     <div class="chip" data-purpose="Payment Collection" onclick="togglePurpose(this)">Payment Collection</div>
@@ -735,12 +738,21 @@ let filterRep      = 'All';
 // ─────────────────────────────────────────────────────
 function initMap() {
   if (leafMap) return;
-  leafMap = L.map('map', { zoomControl: true });
+  leafMap = L.map('map', {
+    zoomControl: true,
+    minZoom: 6,
+    maxZoom: 18,
+    maxBounds: [
+      [4.5, -3.5],
+      [11.5, 1.5]
+    ],
+    maxBoundsViscosity: 1.0
+  });
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     attribution: '© OpenStreetMap © CARTO',
     subdomains: 'abcd', maxZoom: 19
   }).addTo(leafMap);
-  leafMap.setView([5.6037, -0.1870], 11); // Default: Accra
+  leafMap.setView([7.9465, -1.0232], 7); // Centre of Ghana
 }
  
 // ─────────────────────────────────────────────────────
@@ -1009,7 +1021,11 @@ function renderMap(rows, colorMap) {
     bounds.push([lat, lng]);
   });
  
-  if (bounds.length > 0) leafMap.fitBounds(bounds, { padding: [36, 36], maxZoom: 14 });
+  if (bounds.length > 0) {
+    leafMap.fitBounds(bounds, { padding: [36, 36], maxZoom: 14 });
+  } else {
+    leafMap.setView([7.9465, -1.0232], 7);
+  }
   document.getElementById('plotCount').textContent = geo.length + ' visits plotted';
 }
  
