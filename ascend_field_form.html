@@ -320,6 +320,40 @@ body {
 @keyframes spin    { to { transform:rotate(360deg); } }
 @keyframes riseUp  { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
 
+/* ── LOCATION BUTTON ─────────────────────────────── */
+.btn-location {
+  width:100%; background:var(--primary);
+  color:#fff; border:none; border-radius:10px;
+  padding:13px 16px; font-family:var(--font); font-size:15px; font-weight:700;
+  cursor:pointer; letter-spacing:0.02em;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  box-shadow:0 4px 16px rgba(115,64,220,0.3);
+  transition:opacity 0.2s, transform 0.15s;
+}
+.btn-location:active   { transform:scale(0.98); opacity:0.9; }
+.btn-location:disabled { opacity:0.6; cursor:not-allowed; }
+
+.location-success {
+  display:none; align-items:center; gap:10px;
+  background:var(--green-dim);
+  border:1.5px solid rgba(30,158,85,0.25);
+  border-radius:10px; padding:11px 14px;
+}
+.location-success.show { display:flex; }
+.location-success-txt { font-size:13px; font-weight:600; color:var(--green); flex:1; line-height:1.4; }
+.location-retry {
+  font-size:11px; font-weight:600; color:var(--text-muted);
+  cursor:pointer; text-decoration:underline;
+  background:none; border:none; font-family:var(--font);
+}
+.location-error {
+  font-size:12px; color:var(--red);
+  background:rgba(229,57,53,0.07);
+  border-radius:8px; padding:9px 12px;
+  display:none; border-left:3px solid var(--red); margin-top:6px;
+}
+.location-error.show { display:block; }
+
 ::-webkit-scrollbar { width:4px; }
 ::-webkit-scrollbar-track { background:transparent; }
 ::-webkit-scrollbar-thumb { background:rgba(115,64,220,0.2); border-radius:2px; }
@@ -457,11 +491,24 @@ body {
     <div class="section-hdr"><span class="section-ico">📍</span><span class="section-ttl">Current Location</span></div>
     <div class="section-body">
       <div class="field">
-        <label class="field-label">Location Link <span class="req">*</span></label>
-        <input type="url" class="field-input" id="mapLink" placeholder="Paste your current location link…">
-        <div class="map-hint">
-          📱 Open Google Maps → Tap the <strong>blue dot</strong> → Tap <strong>Share</strong> → Copy link → Paste here
+
+        <!-- Success state -->
+        <div class="location-success" id="locationSuccess">
+          <span style="font-size:20px">📍</span>
+          <span class="location-success-txt" id="locationSuccessTxt">Location captured</span>
+          <button class="location-retry" onclick="retryLocation()">Retry</button>
         </div>
+
+        <!-- Button state -->
+        <button class="btn-location" id="locationBtn" onclick="getLocation()">
+          <span>📍</span> <span id="locationBtnTxt">Get My Current Location</span>
+        </button>
+
+        <div class="location-error" id="locationError"></div>
+
+        <!-- Hidden field stores the generated maps link -->
+        <input type="hidden" id="mapLink">
+
       </div>
     </div>
   </div>
@@ -597,6 +644,7 @@ let focusedIndex     = -1;
 let arrivalTime      = null;
 let arrivalDate      = null;
 let clockTimer       = null;
+let dataLoaded       = false;
 
 // ─────────────────────────────────────────────────────
 // INIT
@@ -620,8 +668,12 @@ window.addEventListener('load', () => {
   if (savedStep === '2' && savedData) {
     try {
       const d = JSON.parse(savedData);
-      arrivalDate = new Date(d.arrivalDateISO);
-      arrivalTime = d.arrivalTime;
+      arrivalDate      = new Date(d.arrivalDateISO);
+      arrivalTime      = d.arrivalTime;
+      selectedFacility = d.facility || '';
+      capturedLat      = d.capturedLat || null;
+      capturedLng      = d.capturedLng || null;
+      if (d.mapLink) document.getElementById('mapLink').value = d.mapLink;
 
       // Restore summary
       document.getElementById('sumRep').textContent      = d.repName;
@@ -710,6 +762,7 @@ async function loadRepsAndFacilities() {
     }
     document.getElementById('facilityDropdown').innerHTML =
       '<div class="facility-empty">Start typing to search…</div>';
+    dataLoaded = true;
   } catch(e) {
     console.error('Failed to load:', e);
     document.getElementById('facilityDropdown').innerHTML =
@@ -728,9 +781,80 @@ function populateReps(reps) {
 }
 
 // ─────────────────────────────────────────────────────
+// GEOLOCATION
+// ─────────────────────────────────────────────────────
+let capturedLat = null;
+let capturedLng = null;
+
+function getLocation() {
+  const btn     = document.getElementById('locationBtn');
+  const btnTxt  = document.getElementById('locationBtnTxt');
+  const errEl   = document.getElementById('locationError');
+  const success = document.getElementById('locationSuccess');
+
+  if (!navigator.geolocation) {
+    showLocationError('Your browser does not support location access.');
+    return;
+  }
+
+  btn.disabled   = true;
+  btnTxt.textContent = 'Getting location…';
+  errEl.classList.remove('show');
+
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      capturedLat = pos.coords.latitude;
+      capturedLng = pos.coords.longitude;
+
+      // Build a Google Maps link from the coordinates
+      const mapsLink = `https://maps.google.com?q=${capturedLat},${capturedLng}`;
+      document.getElementById('mapLink').value = mapsLink;
+
+      // Show success
+      btn.style.display = 'none';
+      document.getElementById('locationSuccessTxt').textContent =
+        `Location captured (${capturedLat.toFixed(5)}, ${capturedLng.toFixed(5)})`;
+      success.classList.add('show');
+      errEl.classList.remove('show');
+    },
+    err => {
+      btn.disabled   = false;
+      btnTxt.textContent = 'Get My Current Location';
+      let msg = 'Could not get your location. ';
+      switch(err.code) {
+        case 1: msg += 'Please allow location access in your browser settings.'; break;
+        case 2: msg += 'Location unavailable. Make sure GPS is on.'; break;
+        case 3: msg += 'Request timed out. Please try again.'; break;
+      }
+      showLocationError(msg);
+    },
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+  );
+}
+
+function retryLocation() {
+  capturedLat = null;
+  capturedLng = null;
+  document.getElementById('mapLink').value = '';
+  document.getElementById('locationSuccess').classList.remove('show');
+  document.getElementById('locationBtn').style.display = 'flex';
+  document.getElementById('locationBtn').disabled = false;
+  document.getElementById('locationBtnTxt').textContent = 'Get My Current Location';
+  document.getElementById('locationError').classList.remove('show');
+}
+
+function showLocationError(msg) {
+  const el = document.getElementById('locationError');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+// ─────────────────────────────────────────────────────
 // STEP NAVIGATION
 // ─────────────────────────────────────────────────────
 function goToStep2() {
+  if (!dataLoaded) return showToast('Still loading data, please wait a moment and try again.');
+
   const repName     = document.getElementById('repName').value.trim();
   const newCustomer = document.querySelector('input[name="newCustomer"]:checked')?.value || 'No';
   const newCustName = document.getElementById('newCustomerName').value.trim();
@@ -741,7 +865,7 @@ function goToStep2() {
   if (!repName)              return showToast('Please select your name');
   if (!facility)             return showToast(newCustomer === 'Yes' ? 'Please enter the customer name' : 'Please select a facility');
   if (!facType)              return showToast('Please select a facility type');
-  if (!mapLink)              return showToast('Please paste your current location link');
+  if (!mapLink) return showToast('Please tap "Get My Current Location" first');
 
   // Lock arrival time at the moment they confirm they're at the facility
   arrivalDate = new Date();
@@ -757,6 +881,8 @@ function goToStep2() {
     facility,
     facilityType: facType,
     mapLink,
+    capturedLat,
+    capturedLng,
     arrivalTime,
     arrivalDateISO: arrivalDate.toISOString(),
   }));
@@ -915,6 +1041,8 @@ function toggleNewCustomer(el) {
 // SUBMIT
 // ─────────────────────────────────────────────────────
 async function submitForm() {
+  if (!dataLoaded) return showToast('Still loading data, please wait a moment and try again.');
+
   const repName       = document.getElementById('repName').value.trim();
   const newCustomer   = document.querySelector('input[name="newCustomer"]:checked')?.value || 'No';
   const newCustName   = newCustomer === 'Yes' ? document.getElementById('newCustomerName').value.trim() : '';
@@ -996,6 +1124,15 @@ function resetForm() {
   document.querySelectorAll('input[name="purpose"]').forEach(c => c.checked = false);
   document.querySelectorAll('input[name="order"]')[1].checked = true;
   document.getElementById('submitBtn').disabled = false;
+
+  // Reset location
+  capturedLat = null;
+  capturedLng = null;
+  document.getElementById('locationSuccess').classList.remove('show');
+  document.getElementById('locationBtn').style.display  = 'flex';
+  document.getElementById('locationBtn').disabled       = false;
+  document.getElementById('locationBtnTxt').textContent = 'Get My Current Location';
+  document.getElementById('locationError').classList.remove('show');
 
   // Restart
   captureArrivalTime();
