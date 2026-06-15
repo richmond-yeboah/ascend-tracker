@@ -37,7 +37,7 @@ body {
   color: var(--text);
   font-family: var(--font);
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow-x: auto;
 }
  
 body::before {
@@ -369,9 +369,10 @@ header {
 }
  
 /* ── SCROLLBAR ───────────────────────────────────── */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: #f0ebfb; }
-::-webkit-scrollbar-thumb { background: rgba(115,64,220,0.25); border-radius: 2px; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: rgba(115,64,220,0.06); border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(115,64,220,0.45); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(115,64,220,0.7); }
  
 /* ── LEAFLET POPUP LIGHT OVERRIDE ─────────────────── */
 .drk-popup .leaflet-popup-content-wrapper {
@@ -530,17 +531,64 @@ header {
   border: 1px solid rgba(30,158,85,0.2);
 }
  
+/* ── TABLET (max 1100px) ─────────────────────────── */
 @media (max-width: 1100px) {
-  .kpi-row    { grid-template-columns: repeat(3, 1fr); }
-  .mid-row    { grid-template-columns: 1fr; }
+  .canvas { padding: 16px 20px; }
+  .kpi-row { grid-template-columns: repeat(4, 1fr); }
+  .mid-row { grid-template-columns: 1fr; }
   .charts-row { grid-template-columns: 1fr 1fr; }
+  #map { height: 340px; }
+  .lboard-wrap { height: 300px; }
+  .header-center h1 { font-size: 15px; }
+  .kpi-val { font-size: 24px; }
 }
+
+/* ── MOBILE (max 700px) ──────────────────────────── */
 @media (max-width: 700px) {
-  .canvas { padding: 12px 14px; }
-  header  { padding: 10px 14px; }
+  header { padding: 10px 14px; flex-wrap: wrap; gap: 8px; }
   .header-center { display: none; }
-  .kpi-row    { grid-template-columns: repeat(2, 1fr); }
-  .charts-row { grid-template-columns: 1fr; }
+  .header-right { gap: 8px; }
+  .refresh-pill { font-size: 11px; padding: 4px 8px; }
+  .last-updated { display: none; }
+  .signout-btn { padding: 4px 8px; font-size: 11px; }
+
+  .filter-bar {
+    padding: 8px 12px;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .filter-label { font-size: 9px; }
+  .chip { font-size: 10px; padding: 3px 9px; }
+  .filter-count { width: 100%; margin-left: 0; text-align: right; }
+
+  .canvas { padding: 10px 12px; gap: 12px; }
+
+  .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .kpi-card { padding: 12px 12px; gap: 10px; }
+  .kpi-icon { width: 36px; height: 36px; font-size: 17px; }
+  .kpi-val  { font-size: 20px; }
+  .kpi-lbl  { font-size: 9.5px; }
+
+  .mid-row    { grid-template-columns: 1fr; gap: 12px; }
+  .charts-row { grid-template-columns: 1fr; gap: 12px; }
+
+  #map { height: 280px; }
+  .lboard-wrap { height: auto; max-height: 260px; }
+  .lboard-table th, .lboard-table td { padding: 7px 9px; font-size: 11px; }
+
+  .panel-hdr { padding: 10px 14px; }
+  .panel-ttl { font-size: 10px; }
+
+  .chart-body { height: 190px !important; }
+
+  .conv-table th, .conv-table td { padding: 7px 10px; font-size: 11px; }
+  .conv-name { font-size: 12px; }
+
+  .login-card { padding: 28px 20px; }
+  .login-ttl  { font-size: 19px; }
+
+  .kpi-row[style*="repeat(7"] { grid-template-columns: repeat(2, 1fr) !important; }
+  .kpi-row[style*="repeat(6"] { grid-template-columns: repeat(2, 1fr) !important; }
 }
 </style>
 </head>
@@ -601,6 +649,7 @@ header {
       <div class="live-dot"></div>
       <span id="cdText">—</span>
     </div>
+    <div id="zoneBadge" style="display:none; font-size:11px; font-weight:700; padding:4px 10px; background:var(--green-dim); color:var(--green); border:1px solid rgba(30,158,85,0.3); border-radius:10px; font-family:var(--mono);"></div>
     <button class="signout-btn" onclick="signOut()">Sign out</button>
   </div>
 </header>
@@ -611,25 +660,30 @@ header {
 <!-- ── FILTER BAR ── -->
 <div class="filter-bar" id="filterBar" style="display:none">
   <span class="filter-label">Date</span>
-  <div class="filter-chips">
-    <div class="chip active" id="chipAll" onclick="setToday(false)">All Time</div>
-    <div class="chip chip-today" id="chipToday" onclick="setToday(true)">📅 Today Only</div>
+  <div class="filter-chips" id="dateChips">
+    <div class="chip active"     data-date="all"            onclick="setDateFilter('all',this)">All Time</div>
+    <div class="chip chip-today" data-date="today"          onclick="setDateFilter('today',this)">Today</div>
+    <div class="chip chip-today" data-date="yesterday"      onclick="setDateFilter('yesterday',this)">Yesterday</div>
+    <div class="chip"            data-date="current_week"   onclick="setDateFilter('current_week',this)">This Week</div>
+    <div class="chip"            data-date="previous_week"  onclick="setDateFilter('previous_week',this)">Last Week</div>
+    <div class="chip"            data-date="current_month"  onclick="setDateFilter('current_month',this)">This Month</div>
+    <div class="chip"            data-date="previous_month" onclick="setDateFilter('previous_month',this)">Last Month</div>
   </div>
- 
+
   <div class="filter-divider"></div>
- 
+
   <span class="filter-label">Purpose</span>
   <div class="filter-chips" id="purposeChips">
     <div class="chip active" data-purpose="All" onclick="togglePurpose(this)">All</div>
     <div class="chip" data-purpose="Product Promotion" onclick="togglePurpose(this)">Product Promotion</div>
     <div class="chip" data-purpose="Sales & Order Generation" onclick="togglePurpose(this)">Sales &amp; Order Generation</div>
-    <div class="chip" data-purpose="Customer Replacement Management" onclick="togglePurpose(this)">Customer Replacement Mgmt</div>
+    <div class="chip" data-purpose="Customer Relationship Management" onclick="togglePurpose(this)">Customer Relationship Mgmt</div>
     <div class="chip" data-purpose="Product Education & Training" onclick="togglePurpose(this)">Product Education &amp; Training</div>
     <div class="chip" data-purpose="Distribution & Supply Follow-up" onclick="togglePurpose(this)">Distribution &amp; Supply Follow-up</div>
     <div class="chip" data-purpose="Payment Collection" onclick="togglePurpose(this)">Payment Collection</div>
     <div class="chip" data-purpose="New Customer Acquisition" onclick="togglePurpose(this)">New Customer Acquisition</div>
   </div>
- 
+
   <div class="filter-count" id="filterCount">Showing <span id="filterCountNum">0</span> visits</div>
 </div>
  
@@ -694,7 +748,16 @@ header {
       <div class="chart-body"><canvas id="zoneChart"></canvas></div>
     </div>
   </div>
- 
+
+  <!-- Monthly Visits -->
+  <div class="chart-panel" style="animation-delay:0.18s">
+    <div class="panel-hdr">
+      <span class="panel-ttl">📅 Total Visits per Month</span>
+      <span class="panel-badge" id="monthlyBadge">—</span>
+    </div>
+    <div class="chart-body" style="height:240px"><canvas id="monthlyChart"></canvas></div>
+  </div>
+
   <!-- Conversions -->
   <div class="panel" id="convPanel" style="animation-delay:0.2s">
     <div class="panel-hdr">
@@ -729,7 +792,10 @@ let cdTimer        = null;
 let cdSec          = REFRESH_SEC;
 let currentId      = SHEET_URL;
 let allRows        = [];
-let filterToday    = false;
+let repProfiles    = [];
+let lockedZone     = null;
+let lockedRep      = null;
+let filterDate     = 'all';
 let filterPurpose  = 'All';
 let filterRep      = 'All';
  
@@ -740,19 +806,15 @@ function initMap() {
   if (leafMap) return;
   leafMap = L.map('map', {
     zoomControl: true,
-    minZoom: 6,
-    maxZoom: 18,
-    maxBounds: [
-      [4.5, -3.5],
-      [11.5, 1.5]
-    ],
+    minZoom: 6, maxZoom: 18,
+    maxBounds: [[4.5, -3.5], [11.5, 1.5]],
     maxBoundsViscosity: 1.0
   });
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     attribution: '© OpenStreetMap © CARTO',
     subdomains: 'abcd', maxZoom: 19
   }).addTo(leafMap);
-  leafMap.setView([7.9465, -1.0232], 7); // Centre of Ghana
+  leafMap.setView([7.9465, -1.0232], 7); // Full Ghana view
 }
  
 // ─────────────────────────────────────────────────────
@@ -766,7 +828,7 @@ async function fetchSheet(webAppUrl) {
   if (!res.ok) throw new Error(`HTTP ${res.status} — check that the Web App URL is correct and deployed as "Anyone" can access.`);
   const json = await res.json();
   if (!json.data) throw new Error('Unexpected response format. Make sure the doGet script is deployed correctly.');
-  return json.data;
+  return json;
 }
  
 function parseTable(rows) {
@@ -786,11 +848,31 @@ function parseTable(rows) {
 async function loadData() {
   setLoading(true);
   try {
-    const raw    = await fetchSheet(SHEET_URL);
-    const rows   = parseTable(raw);
+    const json   = await fetchSheet(SHEET_URL);
+    const rows   = parseTable(json.data);
+    repProfiles  = json.repProfiles || [];
     allRows = rows;
+
+    // Check if logged-in user is a rep — lock to their zone
+    const user = auth.currentUser;
+    if (user && repProfiles.length) {
+      const match = repProfiles.find(p => p.email && p.email.toLowerCase() === user.email.toLowerCase());
+      if (match) {
+        lockedZone = null;
+        lockedRep  = match.name;
+        document.getElementById('repFilterBar').style.display = 'none';
+        const badge = document.getElementById('zoneBadge');
+        badge.textContent  = '👤 ' + match.name;
+        badge.style.display = 'block';
+      } else {
+        lockedZone = null;
+        lockedRep  = null;
+        document.getElementById('zoneBadge').style.display = 'none';
+      }
+    }
+
     document.getElementById('filterBar').style.display = 'flex';
-    buildRepChips(rows);
+    if (!lockedZone) buildRepChips(rows);
     const filtered = applyFilters(rows);
     filtered.length ? render(filtered) : showEmpty();
     document.getElementById('lastUpdated').textContent =
@@ -815,11 +897,11 @@ function startCountdown() {
       cdSec = REFRESH_SEC;
       if (!currentId) return;
       try {
-        const raw  = await fetchSheet(currentId);
-        const rows = parseTable(raw);
+        const json  = await fetchSheet(currentId);
+        const rows  = parseTable(json.data);
         if (rows.length) {
           allRows = rows;
-          buildRepChips(rows);
+          if (!lockedZone) buildRepChips(rows);
           const filtered = applyFilters(rows);
           render(filtered);
           document.getElementById('lastUpdated').textContent =
@@ -838,45 +920,61 @@ function updateCd() {
 // ─────────────────────────────────────────────────────
 // FILTERS
 // ─────────────────────────────────────────────────────
+function rowDate(r) {
+  if (r['Timestamp'] == null) return null;
+  const ts = r['Timestamp'];
+  return typeof ts === 'number' ? new Date((ts - 25569) * 86400 * 1000) : new Date(ts);
+}
+
 function applyFilters(rows) {
   let out = rows;
- 
-  if (filterToday) {
-    const todayStr = new Date().toDateString();
-    out = out.filter(r => {
-      // Timestamp is a serial number from Sheets (days since Dec 30 1899)
-      if (r['Timestamp'] == null) return false;
-      const ts = r['Timestamp'];
-      let d;
-      if (typeof ts === 'number') {
-        // Convert Sheets serial to JS Date
-        d = new Date((ts - 25569) * 86400 * 1000);
-      } else {
-        d = new Date(ts);
-      }
-      return d.toDateString() === todayStr;
-    });
+  const now   = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  if (filterDate === 'today') {
+    out = out.filter(r => { const d = rowDate(r); return d && d.toDateString() === today.toDateString(); });
+  } else if (filterDate === 'yesterday') {
+    const yesterday = new Date(today); yesterday.setDate(today.getDate() - 1);
+    out = out.filter(r => { const d = rowDate(r); return d && d.toDateString() === yesterday.toDateString(); });
+  } else if (filterDate === 'current_week') {
+    const dow = today.getDay();
+    const startOfWeek = new Date(today); startOfWeek.setDate(today.getDate() - (dow === 0 ? 6 : dow - 1));
+    out = out.filter(r => { const d = rowDate(r); return d && d >= startOfWeek && d <= now; });
+  } else if (filterDate === 'previous_week') {
+    const dow = today.getDay();
+    const startCurWeek  = new Date(today); startCurWeek.setDate(today.getDate() - (dow === 0 ? 6 : dow - 1));
+    const startPrevWeek = new Date(startCurWeek); startPrevWeek.setDate(startCurWeek.getDate() - 7);
+    const endPrevWeek   = new Date(startCurWeek); endPrevWeek.setDate(startCurWeek.getDate() - 1);
+    out = out.filter(r => { const d = rowDate(r); return d && d >= startPrevWeek && d <= endPrevWeek; });
+  } else if (filterDate === 'current_month') {
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    out = out.filter(r => { const d = rowDate(r); return d && d >= startOfMonth && d <= now; });
+  } else if (filterDate === 'previous_month') {
+    const startPrevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const endPrevMonth   = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
+    out = out.filter(r => { const d = rowDate(r); return d && d >= startPrevMonth && d <= endPrevMonth; });
   }
- 
+
   if (filterPurpose !== 'All') {
-    out = out.filter(r => {
-      const p = (r['Purpose of visit'] || '').toLowerCase();
-      return p.includes(filterPurpose.toLowerCase());
-    });
+    out = out.filter(r => (r['Purpose of visit'] || '').toLowerCase().includes(filterPurpose.toLowerCase()));
   }
- 
+
   if (filterRep !== 'All') {
     out = out.filter(r => (r['Rep Name'] || '') === filterRep);
   }
- 
+
+  if (lockedRep) {
+    out = out.filter(r => (r['Rep Name'] || '') === lockedRep);
+  }
+
   document.getElementById('filterCountNum').textContent = out.length;
   return out;
 }
- 
-function setToday(on) {
-  filterToday = on;
-  document.getElementById('chipAll').classList.toggle('active', !on);
-  document.getElementById('chipToday').classList.toggle('active', on);
+
+function setDateFilter(val, el) {
+  filterDate = val;
+  document.querySelectorAll('#dateChips .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
   const filtered = applyFilters(allRows);
   filtered.length ? render(filtered) : showEmpty();
 }
@@ -927,6 +1025,7 @@ function render(rows) {
   renderPurposeChart(rows);
   renderFacilityChart(rows);
   renderZoneChart(rows);
+  renderMonthlyChart(rows);
   renderConversions(rows);
 }
  
@@ -962,7 +1061,9 @@ function renderKPIs(rows) {
     { ico:'🎯', val: conversions,       lbl:'New Customer Conversions',   color:'#1E9E55', bg:'rgba(30,158,85,0.08)'   },
   ];
  
-  document.getElementById('kpiRow').style.gridTemplateColumns = 'repeat(7, 1fr)';
+  const isMobile = window.innerWidth <= 700;
+  const cols = isMobile ? 2 : 7;
+  document.getElementById('kpiRow').style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
  
   document.getElementById('kpiRow').innerHTML = kpis.map((k, i) => `
     <div class="kpi-card" style="animation-delay:${i*0.07}s">
@@ -1021,11 +1122,7 @@ function renderMap(rows, colorMap) {
     bounds.push([lat, lng]);
   });
  
-  if (bounds.length > 0) {
-    leafMap.fitBounds(bounds, { padding: [36, 36], maxZoom: 14 });
-  } else {
-    leafMap.setView([7.9465, -1.0232], 7);
-  }
+  if (bounds.length > 0) leafMap.fitBounds(bounds, { padding: [36, 36], maxZoom: 14 });
   document.getElementById('plotCount').textContent = geo.length + ' visits plotted';
 }
  
@@ -1220,6 +1317,61 @@ function renderZoneChart(rows) {
 }
  
 // ─────────────────────────────────────────────────────
+// MONTHLY VISITS CHART
+// ─────────────────────────────────────────────────────
+function renderMonthlyChart(rows) {
+  killChart('monthly');
+
+  const monthCounts = {};
+  rows.forEach(r => {
+    const d = rowDate(r);
+    if (!d) return;
+    const key   = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    monthCounts[key] = (monthCounts[key] || 0) + 1;
+  });
+
+  const sorted = Object.keys(monthCounts).sort();
+  if (!sorted.length) {
+    document.getElementById('monthlyBadge').textContent = '—';
+    return;
+  }
+
+  const labels = sorted.map(k => {
+    const [yr, mo] = k.split('-');
+    return new Date(yr, mo - 1, 1).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+  });
+  const data = sorted.map(k => monthCounts[k]);
+
+  document.getElementById('monthlyBadge').textContent = sorted.length + ' month' + (sorted.length !== 1 ? 's' : '');
+
+  charts.monthly = new Chart(document.getElementById('monthlyChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Visits',
+        data,
+        backgroundColor: CHT_COLORS[0],
+        borderRadius: 6,
+        borderSkipped: false,
+        hoverBackgroundColor: CHT_COLORS[1],
+      }]
+    },
+    options: {
+      ...baseOpts,
+      scales: {
+        x: { grid: { display: false },
+             ticks: { color: '#1A0A3B', font: { family: 'Outfit', size: 11 } } },
+        y: { grid: { color: 'rgba(115,64,220,0.07)' },
+             ticks: { color: '#5E4A8A', font: { family: 'JetBrains Mono', size: 10 }, stepSize: 1 },
+             beginAtZero: true }
+      },
+      plugins: { ...baseOpts.plugins, legend: { display: false } }
+    }
+  });
+}
+
+// ─────────────────────────────────────────────────────
 // CONVERSIONS TABLE
 // ─────────────────────────────────────────────────────
 function renderConversions(rows) {
@@ -1314,6 +1466,11 @@ function showEmpty() {
 // Bootstrap map and auto-load on open
 initMap();
 window.addEventListener('load', () => loadData());
+
+// Resize map on window resize for mobile/tablet
+window.addEventListener('resize', () => {
+  if (leafMap) leafMap.invalidateSize();
+});
  
 // ─────────────────────────────────────────────────────
 // FIREBASE AUTH
@@ -1336,18 +1493,18 @@ document.querySelector('.canvas').style.display           = 'none';
 // Auth state listener — runs on every page load
 auth.onAuthStateChanged(user => {
   if (user) {
-    // Signed in — show dashboard, hide login
     document.getElementById('loginScreen').style.display  = 'none';
     document.querySelector('header').style.display        = '';
     document.querySelector('.canvas').style.display       = '';
     loadData();
   } else {
-    // Not signed in — show login, hide everything else
     document.getElementById('loginScreen').style.display  = 'flex';
     document.querySelector('header').style.display        = 'none';
     document.querySelector('.canvas').style.display       = 'none';
     document.getElementById('filterBar').style.display    = 'none';
     document.getElementById('repFilterBar').style.display = 'none';
+    lockedZone = null;
+    lockedRep  = null;
     clearInterval(cdTimer);
   }
 });
