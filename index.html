@@ -802,19 +802,25 @@ let filterRep      = 'All';
 // ─────────────────────────────────────────────────────
 // MAP INIT
 // ─────────────────────────────────────────────────────
+const GHANA_BOUNDS = L.latLngBounds(
+  L.latLng(4.5, -3.5),
+  L.latLng(11.5, 1.5)
+);
+
 function initMap() {
   if (leafMap) return;
   leafMap = L.map('map', {
-    zoomControl: true,
-    minZoom: 6, maxZoom: 18,
-    maxBounds: [[4.5, -3.5], [11.5, 1.5]],
-    maxBoundsViscosity: 1.0
+    zoomControl:          true,
+    minZoom:              6,
+    maxZoom:              18,
+    maxBounds:            GHANA_BOUNDS,
+    maxBoundsViscosity:   1.0
   });
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     attribution: '© OpenStreetMap © CARTO',
     subdomains: 'abcd', maxZoom: 19
   }).addTo(leafMap);
-  leafMap.setView([7.9465, -1.0232], 7); // Full Ghana view
+  leafMap.fitBounds(GHANA_BOUNDS);
 }
  
 // ─────────────────────────────────────────────────────
@@ -1122,7 +1128,13 @@ function renderMap(rows, colorMap) {
     bounds.push([lat, lng]);
   });
  
-  if (bounds.length > 0) leafMap.fitBounds(bounds, { padding: [36, 36], maxZoom: 14 });
+  if (bounds.length > 0) {
+    const pinBounds     = L.latLngBounds(bounds);
+    const clampedBounds = GHANA_BOUNDS.contains(pinBounds) ? pinBounds : GHANA_BOUNDS;
+    leafMap.fitBounds(clampedBounds, { padding: [36, 36], maxZoom: 14 });
+  } else {
+    leafMap.fitBounds(GHANA_BOUNDS);
+  }
   document.getElementById('plotCount').textContent = geo.length + ' visits plotted';
 }
  
