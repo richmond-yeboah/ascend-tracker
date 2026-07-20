@@ -363,7 +363,7 @@ body {
 
 <div class="submitting-veil" id="submittingVeil">
   <div class="spinner"></div>
-  <div class="spinner-lbl">Submitting visit…</div>
+  <div class="spinner-lbl" id="submittingLbl">Saving…</div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -516,7 +516,7 @@ body {
 </div><!-- /form-body -->
 
 <div class="submit-wrap">
-  <button class="btn-submit" onclick="goToStep2()">
+  <button class="btn-submit" id="step1Btn" onclick="goToStep2()">
     <span>I'm at the facility →</span>
   </button>
 </div>
@@ -645,6 +645,7 @@ let arrivalTime      = null;
 let arrivalDate      = null;
 let clockTimer       = null;
 let dataLoaded       = false;
+let visitId          = null;
 
 // ─────────────────────────────────────────────────────
 // INIT
@@ -662,29 +663,39 @@ window.addEventListener('load', () => {
   });
 
   // Restore saved state if page was reloaded on step 2
-  const savedStep = localStorage.getItem('ascend_step');
-  const savedData = localStorage.getItem('ascend_data');
+  // Check both localStorage and sessionStorage for redundancy
+  const savedStep = localStorage.getItem('ascend_step') || sessionStorage.getItem('ascend_step');
+  const savedData = localStorage.getItem('ascend_data') || sessionStorage.getItem('ascend_data');
 
   if (savedStep === '2' && savedData) {
     try {
-      const d = JSON.parse(savedData);
-      arrivalDate      = new Date(d.arrivalDateISO);
+      const d            = JSON.parse(savedData);
+      const savedArrival = new Date(d.arrivalDateISO);
+      const hoursSince   = (new Date() - savedArrival) / (1000 * 60 * 60);
+
+      // Discard if older than 24 hours
+      if (hoursSince > 24) {
+        clearSavedState();
+        captureArrivalTime();
+        startLiveClock();
+        return;
+      }
+
+      arrivalDate      = savedArrival;
       arrivalTime      = d.arrivalTime;
       selectedFacility = d.facility || '';
       capturedLat      = d.capturedLat || null;
       capturedLng      = d.capturedLng || null;
+      visitId          = d.visitId || null;
       if (d.mapLink) document.getElementById('mapLink').value = d.mapLink;
 
-      // Restore summary
       document.getElementById('sumRep').textContent      = d.repName;
       document.getElementById('sumFacility').textContent = d.facility;
       document.getElementById('sumArrival').textContent  = d.arrivalTime;
 
-      // Show step 2 directly
       document.getElementById('step1').style.display = 'none';
       document.getElementById('step2').style.display = 'block';
 
-      // Update step indicator
       document.getElementById('circle1').classList.remove('active');
       document.getElementById('circle1').classList.add('done');
       document.getElementById('circle1').textContent = '✓';
@@ -694,15 +705,13 @@ window.addEventListener('load', () => {
       document.getElementById('label2').classList.add('active');
       document.getElementById('desc2').classList.add('active');
 
-      // Start departure clock
       captureDepartureTime();
       clockTimer = setInterval(() => captureDepartureTime(), 1000);
 
       showToast('Your arrival details were restored after the page reloaded.');
       return;
     } catch(e) {
-      localStorage.removeItem('ascend_step');
-      localStorage.removeItem('ascend_data');
+      clearSavedState();
     }
   }
 
@@ -852,7 +861,40 @@ function showLocationError(msg) {
 // ─────────────────────────────────────────────────────
 // STEP NAVIGATION
 // ─────────────────────────────────────────────────────
-function goToStep2() {
+// ─────────────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────────────
+function clearSavedState() {
+  localStorage.removeItem('ascend_step');
+  localStorage.removeItem('ascend_data');
+  sessionStorage.removeItem('ascend_step');
+  sessionStorage.removeItem('ascend_data');
+}
+
+function saveState(data) {
+  const str = JSON.stringify(data);
+  localStorage.setItem('ascend_step', '2');
+  localStorage.setItem('ascend_data', str);
+  sessionStorage.setItem('ascend_step', '2');
+  sessionStorage.setItem('ascend_data', str);
+}
+
+async function fetchWithRetry(url, options, retries = 3) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const res = await fetch(url, options);
+      return res;
+    } catch(e) {
+      if (i === retries - 1) throw e;
+      await new Promise(r => setTimeout(r, 1500 * (i + 1)));
+    }
+  }
+}
+
+// ─────────────────────────────────────────────────────
+// STEP NAVIGATION — arrival saved to backend on proceed
+// ─────────────────────────────────────────────────────
+async function goToStep2() {
   if (!dataLoaded) return showToast('Still loading data, please wait a moment and try again.');
 
   const repName     = document.getElementById('repName').value.trim();
@@ -862,40 +904,66 @@ function goToStep2() {
   const facType     = document.getElementById('facilityType').value;
   const facility    = newCustomer === 'Yes' ? newCustName : selectedFacility;
 
-  if (!repName)              return showToast('Please select your name');
-  if (!facility)             return showToast(newCustomer === 'Yes' ? 'Please enter the customer name' : 'Please select a facility');
-  if (!facType)              return showToast('Please select a facility type');
-  if (!mapLink) return showToast('Please tap "Get My Current Location" first');
+  if (!repName)  return showToast('Please select your name');
+  if (!facility) return showToast(newCustomer === 'Yes' ? 'Please enter the customer name' : 'Please select a facility');
+  if (!facType)  return showToast('Please select a facility type');
+  if (!mapLink)  return showToast('Please tap "Get My Current Location" first');
 
-  // Lock arrival time at the moment they confirm they're at the facility
   arrivalDate = new Date();
   arrivalTime = formatTime(arrivalDate);
   clearInterval(clockTimer);
 
-  // Save step 1 data to localStorage so it survives page reloads
-  localStorage.setItem('ascend_step', '2');
-  localStorage.setItem('ascend_data', JSON.stringify({
-    repName,
-    newCustomer,
-    newCustName,
-    facility,
-    facilityType: facType,
-    mapLink,
-    capturedLat,
-    capturedLng,
+  // Show saving spinner
+  document.getElementById('submittingLbl').textContent = 'Saving arrival…';
+  document.getElementById('submittingVeil').classList.add('show');
+  document.getElementById('step1Btn').disabled = true;
+
+  try {
+    const res  = await fetchWithRetry(WEB_APP_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action:          'arrival',
+        visitId:         visitId || null,
+        timestamp:       arrivalDate.toISOString(),
+        repName,
+        visitDate:       arrivalDate.toISOString().split('T')[0],
+        facility,
+        facilityType:    facType,
+        newCustomer,
+        newCustomerName: newCustName,
+        mapLink,
+        arrivalTime,
+      })
+    });
+    const json = await res.json();
+    if (json.status !== 'success') throw new Error(json.message || 'Arrival save failed');
+    visitId = json.visitId;
+  } catch(e) {
+    document.getElementById('submittingVeil').classList.remove('show');
+    document.getElementById('step1Btn').disabled = false;
+    showToast('Could not save arrival. Check your connection and try again.');
+    return;
+  }
+
+  document.getElementById('submittingVeil').classList.remove('show');
+  document.getElementById('step1Btn').disabled = false;
+
+  // Save to both localStorage and sessionStorage
+  saveState({
+    repName, newCustomer, newCustName, facility,
+    facilityType: facType, mapLink,
+    capturedLat, capturedLng,
     arrivalTime,
     arrivalDateISO: arrivalDate.toISOString(),
-  }));
+    visitId,
+  });
 
-  // Populate summary
-  document.getElementById('sumRep').textContent     = repName;
+  document.getElementById('sumRep').textContent      = repName;
   document.getElementById('sumFacility').textContent = facility;
   document.getElementById('sumArrival').textContent  = arrivalTime;
 
-  // Capture departure time (live)
   captureDepartureTime();
 
-  // Update step indicator
   document.getElementById('circle1').classList.remove('active');
   document.getElementById('circle1').classList.add('done');
   document.getElementById('circle1').textContent = '✓';
@@ -905,25 +973,21 @@ function goToStep2() {
   document.getElementById('label2').classList.add('active');
   document.getElementById('desc2').classList.add('active');
 
-  // Switch screens
   document.getElementById('step1').style.display = 'none';
   document.getElementById('step2').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // Keep departure time live
-  clockTimer = setInterval(() => {
-    captureDepartureTime();
-  }, 1000);
+  clockTimer = setInterval(() => captureDepartureTime(), 1000);
 }
 
 function backToStep1() {
   clearInterval(clockTimer);
-  localStorage.removeItem('ascend_step');
-  localStorage.removeItem('ascend_data');
+  clearSavedState();
+  visitId = null;
+
   document.getElementById('step1').style.display = 'block';
   document.getElementById('step2').style.display = 'none';
 
-  // Reset step indicator
   document.getElementById('circle1').classList.add('active');
   document.getElementById('circle1').classList.remove('done');
   document.getElementById('circle1').textContent = '1';
@@ -933,7 +997,6 @@ function backToStep1() {
   document.getElementById('label2').classList.remove('active');
   document.getElementById('desc2').classList.remove('active');
 
-  // Restart arrival clock
   startLiveClock();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -1038,50 +1101,44 @@ function toggleNewCustomer(el) {
 }
 
 // ─────────────────────────────────────────────────────
-// SUBMIT
+// SUBMIT — sends departure to update same row in sheet
 // ─────────────────────────────────────────────────────
 async function submitForm() {
   if (!dataLoaded) return showToast('Still loading data, please wait a moment and try again.');
 
-  const repName       = document.getElementById('repName').value.trim();
-  const newCustomer   = document.querySelector('input[name="newCustomer"]:checked')?.value || 'No';
-  const newCustName   = newCustomer === 'Yes' ? document.getElementById('newCustomerName').value.trim() : '';
-  const facility      = newCustomer === 'Yes' ? newCustName : selectedFacility;
-  const facilityType  = document.getElementById('facilityType').value;
-  const mapLink       = document.getElementById('mapLink').value.trim();
-  const purposes      = [...document.querySelectorAll('input[name="purpose"]:checked')].map(c => c.value);
-  const order         = document.querySelector('input[name="order"]:checked')?.value || 'No';
-
-  // Capture final departure time
-  clearInterval(clockTimer);
-  const departureNow  = new Date();
-  const departureTime = formatTime(departureNow);
+  const purposes = [...document.querySelectorAll('input[name="purpose"]:checked')].map(c => c.value);
+  const order    = document.querySelector('input[name="order"]:checked')?.value || 'No';
 
   if (!purposes.length) return showToast('Please select at least one visit purpose');
 
-  const payload = {
-    action:           'submit',
-    timestamp:        arrivalDate.toISOString(),
-    repName,
-    visitDate:        arrivalDate.toISOString().split('T')[0],
-    facility,
-    facilityType,
-    newCustomer,
-    newCustomerName:  newCustName,
-    purpose:          purposes.join(', '),
-    order,
-    mapLink,
-    arrivalTime:      arrivalTime,
-    departureTime:    departureTime,
-  };
+  if (!visitId) {
+    showToast('Visit record not found. Please go back and confirm your arrival again.');
+    return;
+  }
 
+  clearInterval(clockTimer);
+  const departureTime = formatTime(new Date());
+
+  document.getElementById('submittingLbl').textContent = 'Submitting visit…';
   document.getElementById('submittingVeil').classList.add('show');
   document.getElementById('submitBtn').disabled = true;
 
   try {
-    await fetch(WEB_APP_URL, { method:'POST', body:JSON.stringify(payload) });
-    localStorage.removeItem('ascend_step');
-    localStorage.removeItem('ascend_data');
+    const res  = await fetchWithRetry(WEB_APP_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'departure',
+        visitId,
+        purpose: purposes.join(', '),
+        order,
+        departureTime,
+      })
+    });
+    const json = await res.json();
+    if (json.status !== 'success') throw new Error(json.message || 'Submission failed');
+
+    clearSavedState();
+    visitId = null;
     document.getElementById('submittingVeil').classList.remove('show');
     document.getElementById('step2').style.display = 'none';
     document.getElementById('successScreen').classList.add('show');
@@ -1096,8 +1153,8 @@ async function submitForm() {
 // RESET
 // ─────────────────────────────────────────────────────
 function resetForm() {
-  localStorage.removeItem('ascend_step');
-  localStorage.removeItem('ascend_data');
+  clearSavedState();
+  visitId = null;
   document.getElementById('successScreen').classList.remove('show');
   document.getElementById('step1').style.display = 'block';
   document.getElementById('step2').style.display = 'none';
