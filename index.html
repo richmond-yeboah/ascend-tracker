@@ -649,6 +649,7 @@ header {
       <div class="live-dot"></div>
       <span id="cdText">—</span>
     </div>
+    <button class="signout-btn" onclick="manualRefresh()" style="border-color:rgba(115,64,220,0.35); color:var(--primary-lt);" title="Refresh now">⟳</button>
     <div id="zoneBadge" style="display:none; font-size:11px; font-weight:700; padding:4px 10px; background:var(--green-dim); color:var(--green); border:1px solid rgba(30,158,85,0.3); border-radius:10px; font-family:var(--mono);"></div>
     <button class="signout-btn" onclick="signOut()">Sign out</button>
   </div>
@@ -778,7 +779,7 @@ header {
 // ─────────────────────────────────────────────────────
 // CONSTANTS & STATE
 // ─────────────────────────────────────────────────────
-const REFRESH_SEC = 30;
+const REFRESH_SEC = 300;
 const REP_COLORS  = ['#7340DC','#3BBB6C','#E040FB','#FF6B6B','#FFC107',
                      '#00BCD4','#FF8A65','#8BC34A','#F06292','#26C6DA'];
 const CHT_COLORS  = ['#7340DC','#9B6BF5','#3BBB6C','#BE93FF','#5CE69B',
@@ -923,7 +924,32 @@ function startCountdown() {
  
 function updateCd() {
   document.getElementById('cdText').textContent =
-    cdSec > 0 ? `Refresh in ${cdSec}s` : 'Refreshing…';
+    cdSec > 0
+      ? `Refresh in ${Math.floor(cdSec/60)}:${String(cdSec%60).padStart(2,'0')}`
+      : 'Refreshing…';
+}
+
+async function manualRefresh() {
+  if (!currentId) return;
+  const btn = document.querySelector('button[onclick="manualRefresh()"]');
+  if (btn) { btn.textContent = '⟳'; btn.style.opacity = '0.5'; btn.disabled = true; }
+  try {
+    const json  = await fetchSheet(currentId);
+    const rows  = parseTable(json.data);
+    if (rows.length) {
+      allRows = rows;
+      repProfiles = json.repProfiles || [];
+      if (!lockedRep) buildRepChips(rows);
+      const filtered = applyFilters(rows);
+      render(filtered);
+      document.getElementById('lastUpdated').textContent =
+        'Updated ' + new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      // Reset countdown
+      cdSec = REFRESH_SEC;
+      updateCd();
+    }
+  } catch(e) { console.warn('Manual refresh error:', e.message); }
+  if (btn) { btn.style.opacity = '1'; btn.disabled = false; }
 }
  
 // ─────────────────────────────────────────────────────
