@@ -374,19 +374,6 @@ header {
 ::-webkit-scrollbar-thumb { background: rgba(115,64,220,0.45); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(115,64,220,0.7); }
  
-/* ── LEAFLET TOOLTIP HOVER ───────────────────────── */
-.visit-tooltip {
-  background: #ffffff !important;
-  border: 1px solid rgba(115,64,220,0.25) !important;
-  border-radius: 10px !important;
-  box-shadow: 0 8px 28px rgba(115,64,220,0.15) !important;
-  padding: 0 !important;
-  font-family: 'Outfit', sans-serif !important;
-  white-space: nowrap;
-}
-.visit-tooltip::before { display: none !important; }
-.visit-tooltip .leaflet-tooltip-tip { display: none !important; }
-
 /* ── LEAFLET POPUP LIGHT OVERRIDE ─────────────────── */
 .drk-popup .leaflet-popup-content-wrapper {
   background: #ffffff !important; color: #1A0A3B !important;
@@ -1126,124 +1113,50 @@ function renderKPIs(rows) {
 // ─────────────────────────────────────────────────────
 // MAP
 // ─────────────────────────────────────────────────────
-function formatDuration(mins) {
-  if (!mins || isNaN(mins)) return '—';
-  const m = parseInt(mins);
-  if (m < 60) return m + ' min';
-  const h = Math.floor(m / 60);
-  const rem = m % 60;
-  return rem > 0 ? `${h} hr ${rem} min` : `${h} hr`;
-}
-
-function formatVisitTime(raw) {
-  if (!raw) return '—';
-  // raw can be a string like "08:30:22" or a decimal fraction from Sheets
-  let h, m;
-  if (typeof raw === 'number') {
-    const totalMins = Math.round(raw * 24 * 60);
-    h = Math.floor(totalMins / 60) % 24;
-    m = totalMins % 60;
-  } else {
-    const parts = raw.toString().split(':').map(Number);
-    if (parts.length < 2) return raw;
-    h = parts[0]; m = parts[1];
-  }
-  const ampm = h >= 12 ? 'PM' : 'AM';
-  const h12  = h % 12 || 12;
-  return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
-}
-
 function renderMap(rows, colorMap) {
   initMap();
-
-  // Remove old markers and labels
+ 
+  // Remove old markers
   leafMap.eachLayer(l => {
-    if (l instanceof L.CircleMarker || l instanceof L.Marker) leafMap.removeLayer(l);
+    if (l instanceof L.CircleMarker) leafMap.removeLayer(l);
   });
-
+ 
   const geo = rows.filter(r => {
     const lat = parseFloat(r['Latitude']), lng = parseFloat(r['Longitude']);
     return !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0;
   });
-
-  // Sort by timestamp so visit order is chronological
-  const sorted = [...geo].sort((a, b) => {
-    const da = rowDate(a), db = rowDate(b);
-    return (da || 0) - (db || 0);
-  });
-
-  const isToday = filterDate === 'today';
-  const bounds  = [];
-
-  sorted.forEach((r, idx) => {
+ 
+  const bounds = [];
+ 
+  geo.forEach(r => {
     const lat   = parseFloat(r['Latitude']);
     const lng   = parseFloat(r['Longitude']);
     const color = colorMap[r['Rep Name']] || '#7340DC';
-    const order = idx + 1;
-
-    const arrivalFmt   = formatVisitTime(r['Arrival Time']);
-    const departureFmt = formatVisitTime(r['Departure Time']);
-    const durationFmt  = formatDuration(r['Duration']);
-
-    // Build tooltip HTML
-    const tooltipHTML = `
-      <div style="padding:12px 14px;min-width:200px;font-family:Outfit,sans-serif">
-        ${isToday ? `<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#A090C0;margin-bottom:4px">Visit #${order}</div>` : ''}
-        <div style="font-weight:800;font-size:13px;color:${color};margin-bottom:5px">${r['Rep Name'] || '—'}</div>
-        <div style="font-size:12px;color:#1A0A3B;margin-bottom:5px">🏥 ${r['Facility'] || '—'}</div>
-        <div style="font-size:11px;color:#5E4A8A;line-height:1.85">
+ 
+    L.circleMarker([lat, lng], {
+      radius: 9, fillColor: color,
+      color: 'rgba(255,255,255,0.25)', weight: 1.5,
+      opacity: 1, fillOpacity: 0.85
+    })
+    .bindPopup(() => {
+      const el = document.createElement('div');
+      el.style.cssText = 'padding:12px 14px;min-width:190px;font-family:Outfit,sans-serif';
+      el.innerHTML = `
+        <div style="font-weight:800;font-size:13px;color:${color};margin-bottom:6px">${r['Rep Name'] || '—'}</div>
+        <div style="font-size:12px;color:#1A0A3B;margin-bottom:3px">🏥 ${r['Facility'] || '—'}</div>
+        <div style="font-size:11px;color:#5E4A8A;line-height:1.7">
           Zone: ${r['Zone'] || '—'}<br>
           Purpose: ${r['Purpose of visit'] || '—'}<br>
           Type: ${r['Facility Type'] || '—'}<br>
-          Arrival: ${arrivalFmt}<br>
-          Departure: ${departureFmt}<br>
-          Duration: ${durationFmt}
-        </div>
-      </div>`;
-
-    // Marker — show order number badge when Today filter is active
-    const markerOptions = {
-      radius: isToday ? 11 : 9,
-      fillColor: color,
-      color: 'rgba(255,255,255,0.3)', weight: 1.5,
-      opacity: 1, fillOpacity: 0.9
-    };
-
-    const marker = L.circleMarker([lat, lng], markerOptions);
-
-    // Hover tooltip instead of click popup
-    marker.bindTooltip(tooltipHTML, {
-      className:  'visit-tooltip',
-      direction:  'top',
-      offset:     [0, -10],
-      sticky:     false,
-      permanent:  false,
-      opacity:    1,
-    });
-
-    // If Today filter — add a number label on top of the dot
-    if (isToday) {
-      const labelIcon = L.divIcon({
-        className: '',
-        html: `<div style="
-          width:18px;height:18px;border-radius:50%;
-          background:${color};
-          border:2px solid #fff;
-          display:flex;align-items:center;justify-content:center;
-          font-family:Outfit,sans-serif;font-size:9px;font-weight:800;color:#fff;
-          box-shadow:0 2px 6px rgba(0,0,0,0.25);
-          margin-top:-9px;margin-left:-9px;
-        ">${order}</div>`,
-        iconSize: [18, 18],
-        iconAnchor: [9, 9],
-      });
-      L.marker([lat, lng], { icon: labelIcon, interactive: false }).addTo(leafMap);
-    }
-
-    marker.addTo(leafMap);
+          Duration: ${r['Duration'] ? r['Duration'] + ' min' : '—'}
+        </div>`;
+      return el;
+    }, { className: 'drk-popup' })
+    .addTo(leafMap);
+ 
     bounds.push([lat, lng]);
   });
-
+ 
   if (bounds.length > 0) {
     const pinBounds = L.latLngBounds(bounds);
     if (GHANA_BOUNDS.contains(pinBounds)) {
@@ -1254,7 +1167,7 @@ function renderMap(rows, colorMap) {
   } else {
     leafMap.setView(GHANA_CENTER, 7.25);
   }
-  document.getElementById('plotCount').textContent = geo.length + ' visit' + (geo.length !== 1 ? 's' : '') + ' plotted';
+  document.getElementById('plotCount').textContent = geo.length + ' visits plotted';
 }
  
 // ─────────────────────────────────────────────────────
